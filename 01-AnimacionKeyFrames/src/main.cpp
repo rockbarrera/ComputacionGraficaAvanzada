@@ -158,18 +158,26 @@ bool processInput(bool continueApplication = true);
 // Implementacion de todas las funciones.
 void init(int width, int height, std::string strTitle, bool bFullScreen) {
 
+	//Inicializa GLFW
 	if (!glfwInit()) {
 		std::cerr << "Failed to initialize GLFW" << std::endl;
 		exit(-1);
 	}
 
+	//Recibe los parámetros del tamaño de  la ventana
 	screenWidth = width;
 	screenHeight = height;
 
+	//Inicia en el contexto de openGL
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+	//Pregunta si se hará en pantalla completa
+	//glfwCreateWindow  crea la ventana de vista con su tamaño, título y monitor principal
+	// si no se pasa referencia del monitor principal, la vista se crea en una ventana, en caso
+	//contrario se crea a pantalla completa
+	//glfwGetPrimaryMonitor obtiene el monitor principal
 	if (bFullScreen)
 		window = glfwCreateWindow(width, height, strTitle.c_str(),
 				glfwGetPrimaryMonitor(), nullptr);
@@ -177,6 +185,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 		window = glfwCreateWindow(width, height, strTitle.c_str(), nullptr,
 				nullptr);
 
+	//si no crea la ventana o pantalla se cierra el programa y manda código -1
 	if (window == nullptr) {
 		std::cerr
 				<< "Error to create GLFW window, you can try download the last version of your video card that support OpenGL 3.3+"
@@ -185,8 +194,10 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 		exit(-1);
 	}
 
+	//Genera el contexto en la ventana y el intercambio de intervalos
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(0);
+
 
 	glfwSetWindowSizeCallback(window, reshapeCallback);
 	glfwSetKeyCallback(window, keyCallback);
