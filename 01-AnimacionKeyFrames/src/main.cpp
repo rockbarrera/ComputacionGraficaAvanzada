@@ -40,6 +40,9 @@
 int screenWidth;
 int screenHeight;
 
+//Inclusión del joystick
+int present;
+
 GLFWwindow *window;
 
 Shader shader;
@@ -198,12 +201,16 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(0);
 
-
+	//Se generan los manejadores de eventos por parte del usuario
+	//¿Cómo agregar el control de videojuegos?
 	glfwSetWindowSizeCallback(window, reshapeCallback);
 	glfwSetKeyCallback(window, keyCallback);
 	glfwSetCursorPosCallback(window, mouseCallback);
 	glfwSetMouseButtonCallback(window, mouseButtonCallback);
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+
+	//para poner el gamepad
+	present = glfwJoystickPresent(GLFW_JOYSTICK_1);
 
 	// Init glew
 	glewExperimental = GL_TRUE;
@@ -213,21 +220,25 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 		exit(-1);
 	}
 
+	//Se genera la vista y se limpia el buffer de color
 	glViewport(0, 0, screenWidth, screenHeight);
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
+	//Se habilita el canal alfa y el cullface que es la vista
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
-	// Inicialización de los shaders
+	// Inicialización de los shaders (vértice y fragmento de los diferentes elementos)
 	shader.initialize("../Shaders/colorShader.vs", "../Shaders/colorShader.fs");
 	shaderSkybox.initialize("../Shaders/skyBox.vs", "../Shaders/skyBox.fs");
 	shaderMulLighting.initialize("../Shaders/iluminacion_texture_res.vs", "../Shaders/multipleLights.fs");
 
 	// Inicializacion de los objetos.
+	//Generación de los shaders del skybox (que es de todos modos una esfera)
 	skyboxSphere.init();
 	skyboxSphere.setShader(&shaderSkybox);
 	skyboxSphere.setScale(glm::vec3(20.0f, 20.0f, 20.0f));
+
 
 	boxCesped.init();
 	boxCesped.setShader(&shaderMulLighting);
