@@ -264,6 +264,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelAircraft.setShader(&shaderMulLighting);
 
 	// Eclipse
+	//Éste modelo se compone de varias partes y a cada parte se le asigna el mismo shader
 	modelEclipseChasis.loadModel("../models/Eclipse/2003eclipse_chasis.obj");
 	modelEclipseChasis.setShader(&shaderMulLighting);
 	modelEclipseFrontalWheels.loadModel("../models/Eclipse/2003eclipse_frontal_wheels.obj");
@@ -271,11 +272,13 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelEclipseRearWheels.loadModel("../models/Eclipse/2003eclipse_rear_wheels.obj");
 	modelEclipseRearWheels.setShader(&shaderMulLighting);
 	// Helicopter
+	//Éste modelo se compone de varias partes y a cada parte se le asigna el mismo shader
 	modelHeliChasis.loadModel("../models/Helicopter/Mi_24_chasis.obj");
 	modelHeliChasis.setShader(&shaderMulLighting);
 	modelHeliHeli.loadModel("../models/Helicopter/Mi_24_heli.obj");
 	modelHeliHeli.setShader(&shaderMulLighting);
 	// Lamborginhi
+	//Éste modelo se compone de varias partes y a cada parte se le asigna el mismo shader.
 	modelLambo.loadModel("../models/Lamborginhi_Aventador_OBJ/Lamborghini_Aventador_chasis.obj");
 	modelLambo.setShader(&shaderMulLighting);
 	modelLamboLeftDor.loadModel("../models/Lamborginhi_Aventador_OBJ/Lamborghini_Aventador_left_dor.obj");
@@ -292,6 +295,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelLamboRearRightWheel.setShader(&shaderMulLighting);
 
 	// Dart Lego
+	// Éste modelo se compone de varias partes y se le asigna el mismo shader
 	modelDartLegoBody.loadModel("../models/LegoDart/LeoDart_body.obj");
 	modelDartLegoBody.setShader(&shaderMulLighting);
 	modelDartLegoMask.loadModel("../models/LegoDart/LeoDart_mask.obj");
@@ -311,6 +315,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelDartLegoRightLeg.loadModel("../models/LegoDart/LeoDart_right_leg.obj");
 	modelDartLegoRightLeg.setShader(&shaderMulLighting);
 
+	//A la cámara se le asigna la posición donde va iniciar.
 	camera->setPosition(glm::vec3(0.0, 3.0, 4.0));
 
 	// Definimos el tamanio de la imagen
@@ -329,6 +334,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+	//En el skyBox se le asigna los tipos de textura, como es un cubo deben de ser 6 texturas
 	for (int i = 0; i < ARRAY_SIZE_IN_ELEMENTS(types); i++) {
 		skyboxTexture = Texture(fileNames[i]);
 		FIBITMAP* bitmap = skyboxTexture.loadImage(true);
