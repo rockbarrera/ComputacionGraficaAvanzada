@@ -24,7 +24,7 @@
 
 //GLM include
 #define GLM_FORCE_RADIANS
-#include <glm/glm.hpp>
+#include <glm/glm.hpp> //Es para las transformaciones, matematica de openGL
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -57,7 +57,7 @@ Sphere skyboxSphere(20, 20);
 Box boxCesped;
 Box boxWalls;
 Box boxHighway;
-Box boxLandingPad;
+Box boxLandingPad; //Box es una caja, zona de aterrizaje para helicóptero (caja negra)
 // Models complex instances
 Model modelRock;
 Model modelAircraft;
@@ -84,8 +84,9 @@ Model modelDartLegoRightHand;
 Model modelDartLegoLeftLeg;
 Model modelDartLegoRightLeg;
 
-GLuint textureCespedID, textureWallID, textureWindowID, textureHighwayID, textureLandingPadID;
+GLuint textureCespedID, textureWallID, textureWindowID, textureHighwayID, textureLandingPadID; //Primero se genera el ID de la textura, entero sin signo
 GLuint skyboxTextureID;
+
 
 GLenum types[6] = {
 GL_TEXTURE_CUBE_MAP_POSITIVE_X,
@@ -107,7 +108,7 @@ int lastMousePosX, offsetX = 0;
 int lastMousePosY, offsetY = 0;
 
 // Model matrix definitions
-glm::mat4 modelMatrixEclipse = glm::mat4(1.0f);
+glm::mat4 modelMatrixEclipse = glm::mat4(1.0f); //Diagonal principal igual a 1 en todos los casos que sea identidad
 glm::mat4 matrixModelRock = glm::mat4(1.0);
 glm::mat4 modelMatrixHeli = glm::mat4(1.0f);
 glm::mat4 modelMatrixLambo = glm::mat4(1.0);
@@ -231,7 +232,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	// Inicialización de los shaders (vértice y fragmento de los diferentes elementos)
 	shader.initialize("../Shaders/colorShader.vs", "../Shaders/colorShader.fs");
 	shaderSkybox.initialize("../Shaders/skyBox.vs", "../Shaders/skyBox.fs");
-	shaderMulLighting.initialize("../Shaders/iluminacion_texture_res.vs", "../Shaders/multipleLights.fs");
+	shaderMulLighting.initialize("../Shaders/iluminacion_texture_res.vs", "../Shaders/multipleLights.fs"); //Rutas de los shaders y compilarlo
 
 	// Inicializacion de los objetos.
 	//Generación de los shaders del skybox (que es de todos modos una esfera)
@@ -250,8 +251,9 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	boxWalls.init();
 	boxWalls.setShader(&shaderMulLighting);
 	//Se hacen los mismos pasos que cuando se inicia el skyBox para la carretera a excepción de ponerle la escala
-	boxHighway.init();
-	boxHighway.setShader(&shaderMulLighting);
+	boxHighway.init(); //Inicializa los Buffers
+	boxHighway.setShader(&shaderMulLighting); //Poner atributos (como las propiedades de C#)
+	//Se obtienen apuntadores y aqupi se pone la referencia a objeto
 	//Se hacen los mismos pasos de inicialización ¿por qué se le pasa el mismo shaderMulLighting a todos?
 	//Éste es el helipuerto
 	boxLandingPad.init();
@@ -484,34 +486,36 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	// Definiendo la textura a utilizar
 	Texture textureLandingPad("../Textures/landingPad.jpg");
 	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
-	bitmap = textureLandingPad.loadImage();
+	bitmap = textureLandingPad.loadImage(); //OpenGL nadamas carga las texturas en memoria
+	//Carga el mapa de bits como si fuera un arreglo
 	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
 	data = textureLandingPad.convertToData(bitmap, imageWidth,
 		imageHeight);
 	// Creando la textura con id 1
-	glGenTextures(1, &textureLandingPadID);
+	glGenTextures(1, &textureLandingPadID); //Identificador 1 de la textura con su ID
 	// Enlazar esa textura a una tipo de textura de 2D.
 	glBindTexture(GL_TEXTURE_2D, textureLandingPadID);
 	// set the texture wrapping parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // set texture wrapping to GL_REPEAT (default wrapping method)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); // Se definen los comportamientos de la textura
 	// set texture filtering parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	// Verifica si se pudo abrir la textura
-	if (data) {
+	if (data) { //Pasar los bytes en un arreglo a openGL
 		// Transferis los datos de la imagen a memoria
 		// Tipo de textura, Mipmaps, Formato interno de openGL, ancho, alto, Mipmaps,
 		// Formato interno de la libreria de la imagen, el tipo de dato y al apuntador
 		// a los datos
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0,
-			GL_BGRA, GL_UNSIGNED_BYTE, data);
+			GL_BGRA, GL_UNSIGNED_BYTE, data); //Free Image es para abrir imagenes con su formato BGRA
 		// Generan los niveles del mipmap (OpenGL es el ecargado de realizarlos)
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
 		std::cout << "Failed to load texture" << std::endl;
 	// Libera la memoria de la textura
+	//
 	textureLandingPad.freeImage(bitmap);
 }
 
@@ -519,7 +523,7 @@ void destroy() {
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	// --------- IMPORTANTE ----------
-	// Eliminar los shader y buffers creados.
+	// Eliminar los shader y buffers creados. Elimina todos los objetos no utilizados en la memoria
 
 	// Shaders Delete
 	shader.destroy();
@@ -571,15 +575,15 @@ void destroy() {
 	glDeleteTextures(1, &skyboxTextureID);
 }
 
-void reshapeCallback(GLFWwindow *Window, int widthRes, int heightRes) {
+void reshapeCallback(GLFWwindow *Window, int widthRes, int heightRes) { //Cuando cambias de tamaño la ventana
 	screenWidth = widthRes;
 	screenHeight = heightRes;
-	glViewport(0, 0, widthRes, heightRes);
+	glViewport(0, 0, widthRes, heightRes); //Se ajusta el puerto de vista
 }
 
-void keyCallback(GLFWwindow *window, int key, int scancode, int action,
+void keyCallback(GLFWwindow *window, int key, int scancode, int action, //Para cachar los eventos del teclado
 		int mode) {
-	if (action == GLFW_PRESS) {
+	if (action == GLFW_PRESS) { //Press, Repeate, Release
 		switch (key) {
 		case GLFW_KEY_ESCAPE:
 			exitApp = true;
@@ -588,14 +592,14 @@ void keyCallback(GLFWwindow *window, int key, int scancode, int action,
 	}
 }
 
-void mouseCallback(GLFWwindow *window, double xpos, double ypos) {
+void mouseCallback(GLFWwindow *window, double xpos, double ypos) { //Desplazamento del mouse
 	offsetX = xpos - lastMousePosX;
 	offsetY = ypos - lastMousePosY;
 	lastMousePosX = xpos;
 	lastMousePosY = ypos;
 }
 
-void mouseButtonCallback(GLFWwindow *window, int button, int state, int mod) {
+void mouseButtonCallback(GLFWwindow *window, int button, int state, int mod) { //Botones del mouse
 	if (state == GLFW_PRESS) {
 		switch (button) {
 		case GLFW_MOUSE_BUTTON_RIGHT:
@@ -612,7 +616,7 @@ void mouseButtonCallback(GLFWwindow *window, int button, int state, int mod) {
 	}
 }
 
-bool processInput(bool continueApplication) {
+bool processInput(bool continueApplication) { //Obtener los métodos del teclado
 	if (exitApp || glfwWindowShouldClose(window) != 0) {
 		return false;
 	}
@@ -900,12 +904,12 @@ void applicationLoop() {
 		boxHighway.setOrientation(glm::vec3(0.0, 0.0, 0.0));
 		boxHighway.render();
 		// Landing pad
-		glBindTexture(GL_TEXTURE_2D, textureLandingPadID);
+		glBindTexture(GL_TEXTURE_2D, textureLandingPadID); //Se genera la figura del helipuerto
 		boxLandingPad.setScale(glm::vec3(10.0, 0.05, 10.0));
 		boxLandingPad.setPosition(glm::vec3(5.0, 0.05, -5.0));
 		boxLandingPad.setOrientation(glm::vec3(0.0, 0.0, 0.0));
 		boxLandingPad.render();
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTexture(GL_TEXTURE_2D, 0); //Después del renderizado, no debe tener ninguna textura
 
 		/*******************************************
 		 * Custom objects obj
@@ -1096,7 +1100,7 @@ void applicationLoop() {
 		 * State machines
 		 *******************************************/
 		// State machine for eclipse car
-		switch(state){
+		switch(state){//Solo es 0,1,2 y 3
 		case 0:
 			if(numberAdvance == 0)
 				maxAdvance = 65.0;
@@ -1110,8 +1114,8 @@ void applicationLoop() {
 				maxAdvance = 44.5;
 			state = 1;
 			break;
-		case 1:
-			modelMatrixEclipse = glm::translate(modelMatrixEclipse, glm::vec3(0.0, 0.0, 0.1));
+		case 1: //Avanzar
+			modelMatrixEclipse = glm::translate(modelMatrixEclipse/*matriz acumulable*/, glm::vec3(0.0, 0.0, 0.1));
 			advanceCount += 0.1;
 			rotWheelsX += 0.05;
 			rotWheelsY -= 0.02;
@@ -1123,7 +1127,7 @@ void applicationLoop() {
 				state = 2;
 			}
 			break;
-		case 2:
+		case 2: //Girar
 			modelMatrixEclipse = glm::translate(modelMatrixEclipse, glm::vec3(0.0, 0.0, 0.025));
 			modelMatrixEclipse = glm::rotate(modelMatrixEclipse, glm::radians(0.5f), glm::vec3(0, 1, 0));
 			rotCount += 0.5f;
@@ -1141,7 +1145,7 @@ void applicationLoop() {
 		}
 
 		// State machine for the lambo car
-		switch(stateDoor){
+		switch(stateDoor){ //Sólo es un contador, el chiste es identificar el pivote
 		case 0:
 			dorRotCount += 0.5;
 			if(dorRotCount > 75)

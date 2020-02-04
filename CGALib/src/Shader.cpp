@@ -31,11 +31,12 @@ void Shader::initialize(std::string strVertexFile,
 
 	GLenum ErrorCheckValue = glGetError();
 
-	VertexShaderId = glCreateShader(GL_VERTEX_SHADER);
-	FragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
+	//Crea en tiempo de ejecucion, ligarlo y asociarlo al programa
+	VertexShaderId = glCreateShader(GL_VERTEX_SHADER); //Crea el shader de vértice
+	FragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER); //Crea el shader de fragmento
 
-	strVShader = loadShaderFile(strVertexFile.c_str());
-	strFShader = loadShaderFile(strFragmentFile.c_str());
+	strVShader = loadShaderFile(strVertexFile.c_str()); //Lee el archivo y se pasa como cadena
+	strFShader = loadShaderFile(strFragmentFile.c_str()); //
 
 	const char *szVShader = strVShader.c_str();
 	const char *szFShader = strFShader.c_str();
@@ -44,9 +45,9 @@ void Shader::initialize(std::string strVertexFile,
 	glShaderSource(FragmentShaderId, 1, &szFShader, nullptr);
 
 	GLint isCompiled = 0;
-	glCompileShader(VertexShaderId);
+	glCompileShader(VertexShaderId); //Compila el shader
 	glGetShaderiv(VertexShaderId, GL_COMPILE_STATUS, &isCompiled);
-	if (isCompiled == GL_FALSE) {
+	if (isCompiled == GL_FALSE) { //Obtiene si fue compilado o no
 		GLint maxLength = 0;
 		glGetShaderiv(VertexShaderId, GL_INFO_LOG_LENGTH, &maxLength);
 
@@ -59,7 +60,7 @@ void Shader::initialize(std::string strVertexFile,
 	}
 	glCompileShader(FragmentShaderId);
 	glGetShaderiv(FragmentShaderId, GL_COMPILE_STATUS, &isCompiled);
-	if (isCompiled == GL_FALSE) {
+	if (isCompiled == GL_FALSE) { //Se obtiene si fue o no compilado y se revisa si hay error
 		GLint maxLength = 0;
 		glGetShaderiv(FragmentShaderId, GL_INFO_LOG_LENGTH, &maxLength);
 
@@ -88,7 +89,7 @@ void Shader::initialize(std::string strVertexFile,
 	}
 
 
-	glLinkProgram(ShaderProgramId);
+	glLinkProgram(ShaderProgramId); //Linkeamos y se verifica si hay errores
 
 	ErrorCheckValue = glGetError();
 

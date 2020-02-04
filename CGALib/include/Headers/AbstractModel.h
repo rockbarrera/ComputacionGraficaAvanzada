@@ -136,13 +136,16 @@ public:
 		glGenVertexArrays(1, &VAO);
 		glBindVertexArray(VAO);
 
-		glGenBuffers(1, &VBO);
-		glGenBuffers(1, &EBO);
+		glGenBuffers(1, &VBO); //Almacena los vértices de las mallas
+		glGenBuffers(1, &EBO); //Hacer índices, element buffer object
+		//Con array buffer hay 6 vértices, Con element buffer se reduce a 4 vértices
+		//GLunint indices [] = {0,1,2,0,2,3}, 4 vértices 6 índices
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBufferData(GL_ARRAY_BUFFER, vertexArray.size() * sizeof(vertexArray[0]), vertexArray.data(), GL_DYNAMIC_DRAW);
+		//Trnsferencia de meomoria
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(index[0]), index.data(), GL_STATIC_DRAW);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertexArray[0]), (GLvoid*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertexArray[0]), (GLvoid*)0); //Indices que se pasan en el shader
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(vertexArray[0]), (GLvoid*)(sizeof(vertexArray[0].m_pos)));
 		glEnableVertexAttribArray(2);

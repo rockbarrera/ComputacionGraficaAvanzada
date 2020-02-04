@@ -1,9 +1,9 @@
 #version 330 core
 
 struct Light {
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
+    vec3 ambient; //Como se ve el objeto en ausencia de luz
+    vec3 diffuse; //La suma de las componentes de tal forma que impacta la cara de los modelos
+    vec3 specular; //El brillo
 };
 
 struct  DirectionalLight{
@@ -34,14 +34,14 @@ struct  SpotLight{
     float linear;
     float quadratic;
 
-};
+}; //Lámpara
 
 const int MAX_POINT_LIGHTS = 20;
 const int MAX_SPOT_LIGHTS = 1;
 
 out vec4 color;
 
-in vec3 fragPos;  
+in vec3 fragPos;  //Vectores de entrada vienen del vertex shader
 in vec3 our_normal;
 in vec2 our_uv;
 
