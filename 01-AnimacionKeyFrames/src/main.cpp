@@ -236,22 +236,27 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	// Inicializacion de los objetos.
 	//Generación de los shaders del skybox (que es de todos modos una esfera)
 	skyboxSphere.init();
+	//En progtramación pasas el argumento por regerencia
+	//En éste caso le asignas al skyBox el shader generado exclisivamente al skyBox
 	skyboxSphere.setShader(&shaderSkybox);
+	//Al skyBox( que es una esfera a final de cuentas) se le pasan sus valores con lo que será escalado
 	skyboxSphere.setScale(glm::vec3(20.0f, 20.0f, 20.0f));
 
-
-	boxCesped.init();
+	//Inicialización del pasto en el entorno gráfico
+	boxCesped.init(); //Se hacen los mismos pasos que cuando se inicia el skyBox
 	boxCesped.setShader(&shaderMulLighting);
-
+	
+	//Se hacen los mismos pasos que cuando se inicia el skyBox  excepción de ponerle la escala
 	boxWalls.init();
 	boxWalls.setShader(&shaderMulLighting);
-
+	//Se hacen los mismos pasos que cuando se inicia el skyBox para la carretera a excepción de ponerle la escala
 	boxHighway.init();
 	boxHighway.setShader(&shaderMulLighting);
-
+	//Se hacen los mismos pasos de inicialización ¿por qué se le pasa el mismo shaderMulLighting a todos?
+	//Éste es el helipuerto
 	boxLandingPad.init();
 	boxLandingPad.setShader(&shaderMulLighting);
-
+	//Se empiezan a cargar los modelos en 3D 
 	modelRock.loadModel("../models/rock/rock.obj");
 	modelRock.setShader(&shaderMulLighting);
 
@@ -1150,8 +1155,10 @@ void applicationLoop() {
 }
 
 int main(int argc, char **argv) {
+	//Inicializa todos los componentes gráficos (shaders, texturas, vista, modelos, manejadores de eventos, etc)
 	init(800, 700, "Window GLFW", false);
 	applicationLoop();
+	//Destruye todos los elementos utilizados durante la ejecución de la aplicación
 	destroy();
 	return 1;
 }
