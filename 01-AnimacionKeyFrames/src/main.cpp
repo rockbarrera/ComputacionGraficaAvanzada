@@ -6,6 +6,7 @@
 //std includes
 #include <string>
 #include <iostream>
+//#include <stdio.h>
 
 //glfw include
 #include <GLFW/glfw3.h>
@@ -211,7 +212,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
 	//para poner el gamepad
-	present = glfwJoystickPresent(GLFW_JOYSTICK_1);
+	//present = glfwJoystickPresent(GLFW_JOYSTICK_1);
 
 	// Init glew
 	glewExperimental = GL_TRUE;
@@ -619,6 +620,59 @@ void mouseButtonCallback(GLFWwindow *window, int button, int state, int mod) { /
 bool processInput(bool continueApplication) { //Obtener los métodos del teclado
 	if (exitApp || glfwWindowShouldClose(window) != 0) {
 		return false;
+	}
+
+	//para poner el gamepad
+	int pad = 1;
+	present = glfwJoystickPresent(GLFW_JOYSTICK_1);
+	//std::cout << "Estado del gamepad: " << present << std::endl;
+	if (pad = present)
+	{
+		int axesCount;
+		const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axesCount);
+		//std::cout << "Ejes disponibles: " << axesCount << std::endl;
+
+		/*
+		std::cout << std::endl;
+		std::cout << "Left stick X Axis: " << axes[0] << std::endl;
+		std::cout << "Left stick Y Axis: " << axes[1] << std::endl;
+		std::cout << "Right stick X Axis: " << axes[2] << std::endl;
+		std::cout << "Right stick Y Axis: " << axes[3] << std::endl;
+		std::cout << "Left trigger/L2: " << axes[0] << std::endl;
+		std::cout << "Right trigger/R2: " << axes[0] << std::endl;
+		*/
+		//Para el movimiento traslación de la cámara con el gamepad
+		if(axes[1] > 0) //Hacia arriba
+			camera->moveFrontCamera(true, deltaTime);
+		if(axes[1] < 0) //Hacia abajo
+			camera->moveFrontCamera(false, deltaTime);
+		if(axes[0] > 0) //Hacia la derecha
+			camera->moveRightCamera(true, deltaTime);
+		if(axes[0] < 0) //Hacia la izquiera
+			camera->moveRightCamera(false, deltaTime);
+
+		//Para el movimiento rotación de la cámara
+		if(axes[3] > 0)
+			camera->mouseMoveCamera(offsetX, offsetY, deltaTime);
+
+		int buttonCount;
+		const unsigned char* buttons;
+		buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &buttonCount);
+		if (GLFW_PRESS == buttons[1])
+		{
+			//std::cout << "B button presed" << std::endl;
+			//camera->moveFrontCamera(true, deltaTime);
+		}
+		if (GLFW_RELEASE == buttons[1])
+		{
+			//std::cout << "B button is released" << std::endl;
+		}
+
+		const char* name = glfwGetJoystickName(GLFW_JOYSTICK_1);
+		//std::cout << "Nombre del joystick: " << name << std::endl;
+
+
+
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
