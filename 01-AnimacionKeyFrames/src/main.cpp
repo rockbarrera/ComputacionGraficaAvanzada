@@ -67,6 +67,7 @@ Model modelEclipseRearWheels;
 Model modelEclipseFrontalWheels;
 Model modelHeliChasis;
 Model modelHeliHeli;
+Model modelHeliHeliSmall; //Para el modelo de la hélice pequeña
 Model modelLambo;
 Model modelLamboLeftDor;
 Model modelLamboRightDor;
@@ -142,6 +143,7 @@ int numPasosDart = 0;
 
 // Var animate helicopter
 float rotHelHelY = 0.0;
+float rotHelHelYSmall = 0.0; //Para la rotación de la hélice pequeña
 
 // Var animate lambo dor
 int stateDoor = 0;
@@ -276,10 +278,12 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelEclipseRearWheels.setShader(&shaderMulLighting);
 	// Helicopter
 	//Éste modelo se compone de varias partes y a cada parte se le asigna el mismo shader
-	modelHeliChasis.loadModel("../models/Helicopter/Mi_24_chasis.obj");
+	modelHeliChasis.loadModel("../models/Helicopter/heli_torso.obj");
 	modelHeliChasis.setShader(&shaderMulLighting);
 	modelHeliHeli.loadModel("../models/Helicopter/Mi_24_heli.obj");
 	modelHeliHeli.setShader(&shaderMulLighting);
+	modelHeliHeliSmall.loadModel("../models/Helicopter/small_heli.obj"); //Cargamos el modelo de la hélice pequeña
+	modelHeliHeliSmall.setShader(&shaderMulLighting);
 	// Lamborginhi
 	//Éste modelo se compone de varias partes y a cada parte se le asigna el mismo shader.
 	modelLambo.loadModel("../models/Lamborginhi_Aventador_OBJ/Lamborghini_Aventador_chasis.obj");
@@ -554,6 +558,7 @@ void destroy() {
 	modelEclipseRearWheels.destroy();
 	modelHeliChasis.destroy();
 	modelHeliHeli.destroy();
+	modelHeliHeliSmall.destroy();
 	modelLambo.destroy();
 	modelLamboFrontLeftWheel.destroy();
 	modelLamboFrontRightWheel.destroy();
@@ -1004,6 +1009,13 @@ void applicationLoop() {
 		modelMatrixHeliHeli = glm::translate(modelMatrixHeliHeli, glm::vec3(0.0, 0.0, 0.249548));
 		modelHeliHeli.render(modelMatrixHeliHeli);
 
+		//Para la hélice pequeña
+		glm::mat4 modelMatrixHeliHeliSmall = glm::mat4(modelMatrixHeliChasis);
+		modelMatrixHeliHeliSmall = glm::translate(modelMatrixHeliHeliSmall, glm::vec3(0.0, 0.0, -0.249548));
+		modelMatrixHeliHeliSmall = glm::rotate(modelMatrixHeliHeliSmall, rotHelHelYSmall, glm::vec3(1, 0, 0));
+		modelMatrixHeliHeliSmall = glm::translate(modelMatrixHeliHeliSmall, glm::vec3(0.0, 0.0, 0.249548));
+		modelHeliHeliSmall.render(modelMatrixHeliHeliSmall);
+
 		// Lambo car
 		glDisable(GL_CULL_FACE);
 		glm::mat4 modelMatrixLamboChasis = glm::mat4(modelMatrixLambo);
@@ -1149,6 +1161,7 @@ void applicationLoop() {
 
 		// Constantes de animaciones
 		rotHelHelY += 0.5;
+		rotHelHelYSmall += 0.01; //De la hélice pequeña
 
 		/*******************************************
 		 * State machines
