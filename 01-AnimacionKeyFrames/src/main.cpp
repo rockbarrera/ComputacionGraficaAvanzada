@@ -145,6 +145,7 @@ int numPasosDart = 0;
 float rotHelHelY = 0.0;
 float rotHelHelYSmall = 0.0; //Para la rotación de la hélice pequeña
 
+
 // Var animate lambo dor
 int stateDoor = 0;
 float dorRotCount = 0.0;
@@ -803,6 +804,8 @@ void applicationLoop() {
 	matrixModelRock = glm::translate(matrixModelRock, glm::vec3(-3.0, 0.0, 2.0));
 
 	modelMatrixHeli = glm::translate(modelMatrixHeli, glm::vec3(5.0, 10.0, -5.0));
+	int stateHeli = 0; //Para la máquina de estados del helicóptero
+	float ascDescHeli = 10.0; //Para la traslación del helicópterO
 
 	modelMatrixAircraft = glm::translate(modelMatrixAircraft, glm::vec3(10.0, 2.0, -17.5));
 
@@ -1000,6 +1003,7 @@ void applicationLoop() {
 		modelEclipseRearWheels.render(modelMatrixRearWheels);
 
 		// Helicopter
+		//Se tiene que bajar todo el helicóptero
 		glm::mat4 modelMatrixHeliChasis = glm::mat4(modelMatrixHeli);
 		modelHeliChasis.render(modelMatrixHeliChasis);
 
@@ -1011,9 +1015,9 @@ void applicationLoop() {
 
 		//Para la hélice pequeña
 		glm::mat4 modelMatrixHeliHeliSmall = glm::mat4(modelMatrixHeliChasis);
-		modelMatrixHeliHeliSmall = glm::translate(modelMatrixHeliHeliSmall, glm::vec3(0.0, 0.0, -0.249548));
+		modelMatrixHeliHeliSmall = glm::translate(modelMatrixHeliHeliSmall, glm::vec3(0.4747, 2.085, -5.647));
 		modelMatrixHeliHeliSmall = glm::rotate(modelMatrixHeliHeliSmall, rotHelHelYSmall, glm::vec3(1, 0, 0));
-		modelMatrixHeliHeliSmall = glm::translate(modelMatrixHeliHeliSmall, glm::vec3(0.0, 0.0, 0.249548));
+		modelMatrixHeliHeliSmall = glm::translate(modelMatrixHeliHeliSmall, glm::vec3(-0.4747, -2.085, 5.647));
 		modelHeliHeliSmall.render(modelMatrixHeliHeliSmall);
 
 		// Lambo car
@@ -1161,7 +1165,7 @@ void applicationLoop() {
 
 		// Constantes de animaciones
 		rotHelHelY += 0.5;
-		rotHelHelYSmall += 0.01; //De la hélice pequeña
+		rotHelHelYSmall += 0.5; //De la hélice pequeña
 
 		/*******************************************
 		 * State machines
@@ -1224,6 +1228,22 @@ void applicationLoop() {
 				dorRotCount = 0.0;
 				stateDoor = 0;
 			}
+			break;
+		}
+
+		//State machine for asc desc for helicopter
+		switch (stateHeli) {
+		case 0: //Cuando desciende
+			modelMatrixHeli = glm::translate(modelMatrixHeli, glm::vec3(0.0, -0.025, 0.0));
+			ascDescHeli -= 0.025;
+			if (ascDescHeli <= 0.04)
+				stateHeli = 1;
+			break;
+		case 1: // Cuando asciende
+			modelMatrixHeli = glm::translate(modelMatrixHeli, glm::vec3(0.0, 0.025, 0.0));
+			ascDescHeli += 0.025;
+			if (ascDescHeli >= 10.0)
+				stateHeli = 0;
 			break;
 		}
 
