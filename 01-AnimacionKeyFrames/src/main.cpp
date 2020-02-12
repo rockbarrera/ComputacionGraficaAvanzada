@@ -810,6 +810,7 @@ void applicationLoop() {
 	modelMatrixAircraft = glm::translate(modelMatrixAircraft, glm::vec3(10.0, 2.0, -17.5));
 
 	modelMatrixLambo = glm::translate(modelMatrixLambo, glm::vec3(23.0, 0.0, 0.0));
+	modelMatrixLambo = glm::rotate(modelMatrixLambo, glm::radians(180.0f), glm::vec3(0, 1, 0)); // Rotación al lambo
 
 	modelMatrixDart = glm::translate(modelMatrixDart, glm::vec3(3.0, 0.0, 20.0));
 
@@ -1223,11 +1224,11 @@ void applicationLoop() {
 				stateDoor = 1;
 			break;
 		case 1:
-			dorRotCount -= 0.5;
-			if(dorRotCount < 0){
-				dorRotCount = 0.0;
-				stateDoor = 0;
-			}
+			//dorRotCount -= 0.5;
+			//if(dorRotCount < 0){
+			//	dorRotCount = 0.0;
+			//	stateDoor = 0;
+			//}
 			break;
 		}
 
