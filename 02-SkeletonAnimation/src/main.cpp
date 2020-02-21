@@ -289,7 +289,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelDartLegoRightLeg.setShader(&shaderMulLighting);
 
 	//Mayow Dragonite
-	mayowModelAnimate.loadModel("../models/DragonitePractica/practica2clase.fbx");
+	mayowModelAnimate.loadModel("../models/DragonitePractica/practica2clase3.fbx");
 	mayowModelAnimate.setShader(&shaderMulLighting);
 
 	camera->setPosition(glm::vec3(0.0, 3.0, 4.0));
@@ -993,10 +993,10 @@ void applicationLoop() {
 
 		/*******************************************
 		 * Custom Anim objects obj
-		 *******************************************/
+		 *******************************************/ //Animáción de objetos indexados para OpenGL
 		glm::mat4 modelMatrixMayowBody = glm::mat4(modelMatrixMayow);
 		modelMatrixMayowBody = glm::scale(modelMatrixMayowBody, glm::vec3(0.021, 0.021, 0.021));
-		mayowModelAnimate.setAnimationIndex(0);
+		mayowModelAnimate.setAnimationIndex(1); // Aquí se cambian las animaciones
 		mayowModelAnimate.render(modelMatrixMayowBody);
 
 		/*******************************************
