@@ -85,8 +85,8 @@ Model cowboyModelAnimate;
 Terrain terrain(-1,
 				-1,
 				150/*las divisiones a lo largo y ancho*/,
-				25/*la altura máxima en el eje z*/,
-				"../Textures/tester.png");/*la ruta del archivo*/
+				15/*la altura máxima en el eje z*/,
+				"../Textures/terrenoTarea.png");/*la ruta del archivo*/
 				//Se instancia un objeto tipo terreno, los dos primeros
 															//son donde queremos colocar el terreno
 															//Cada subdivision tiene una unidad, mas grande mas costo computacioneal
