@@ -110,8 +110,8 @@ float Terrain::getHeightTerrain(float worldX, float worldZ){
 	float terrainX = worldX - x - position.x;
 	float terrainZ = worldZ - z - position.z;
 	float gridSquareSize = size / ((float) this->imageHeight - 1);
-	int gridX = floor(terrainX / gridSquareSize);
-	int gridZ = floor(terrainZ / gridSquareSize);
+	int gridX = floor(terrainX / gridSquareSize); //Obtenemos el Grid con subdivisiones
+	int gridZ = floor(terrainZ / gridSquareSize); 
 	if(gridX < 0 || gridX > this->imageHeight - 1 || gridZ < 0 || gridZ > this->imageHeight - 1)
 		return position.y;
 	float xCoord = fmod(terrainX, gridSquareSize) / gridSquareSize;
@@ -161,7 +161,7 @@ glm::vec3 Terrain::getNormalTerrain(float worldX, float worldZ){
 	//return glm::vec3(0, 1, 0);
 }
 
-float Terrain::barryCentric(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec2 pos){
+float Terrain::barryCentric(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec2 pos){ //Las ecuaciones baricéntricas
 	float det = (p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z);
 	float l1 = ((p2.z - p3.z) * (pos.x - p3.x) + (p3.x - p2.x) * (pos.y - p3.z)) / det;
 	float l2 = ((p3.z - p1.z) * (pos.x - p3.x) + (p1.x - p3.x) * (pos.y - p3.z)) / det;

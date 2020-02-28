@@ -86,7 +86,7 @@ Model mayowModelAnimate;
 Terrain terrain(-1, -1, 200, 8, "../Textures/heightmap.png");
 
 GLuint textureCespedID, textureWallID, textureWindowID, textureHighwayID, textureLandingPadID;
-GLuint textureTerrainBackgroundID, textureTerrainRID, textureTerrainGID, textureTerrainBID, textureTerrainBlendMapID;
+GLuint textureTerrainBackgroundID, textureTerrainRID, textureTerrainGID, textureTerrainBID, textureTerrainBlendMapID; //Declarar los id de la  textusa
 GLuint skyboxTextureID;
 
 GLenum types[6] = {
@@ -566,7 +566,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	// Libera la memoria de la textura
 	textureTerrainG.freeImage(bitmap);
 
-	// Definiendo la textura a utilizar
+	// Definiendo la textura a utilizar  //El camino azul del terreno para esa textura
 	Texture textureTerrainB("../Textures/path.png");
 	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
 	bitmap = textureTerrainB.loadImage();
@@ -599,19 +599,19 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	textureTerrainB.freeImage(bitmap);
 
 	// Definiendo la textura a utilizar
-	Texture textureTerrainBlendMap("../Textures/blendMap.png");
+	Texture textureTerrainBlendMap("../Textures/blendMap2.png"); //El blendmap que genera el terreno
 	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
-	bitmap = textureTerrainBlendMap.loadImage();
+	bitmap = textureTerrainBlendMap.loadImage(); //Se convierte a mapa de bits
 	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
 	data = textureTerrainBlendMap.convertToData(bitmap, imageWidth,
-			imageHeight);
+			imageHeight); //Arreglo unidimensional
 	// Creando la textura con id 1
 	glGenTextures(1, &textureTerrainBlendMapID);
 	// Enlazar esa textura a una tipo de textura de 2D.
 	glBindTexture(GL_TEXTURE_2D, textureTerrainBlendMapID);
 	// set the texture wrapping parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // set texture wrapping to GL_REPEAT (default wrapping method)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); //Filtering y wrapping
 	// set texture filtering parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -622,13 +622,13 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 		// Formato interno de la libreria de la imagen, el tipo de dato y al apuntador
 		// a los datos
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0,
-		GL_BGRA, GL_UNSIGNED_BYTE, data);
+		GL_BGRA, GL_UNSIGNED_BYTE, data); //Pasas los datos de la imagen a memoria
 		// Generan los niveles del mipmap (OpenGL es el ecargado de realizarlos)
 		glGenerateMipmap(GL_TEXTURE_2D);
 	} else
 		std::cout << "Failed to load texture" << std::endl;
 	// Libera la memoria de la textura
-	textureTerrainBlendMap.freeImage(bitmap);
+	textureTerrainBlendMap.freeImage(bitmap); //COn esta estructura se pueden generar las demás texturas
 }
 
 void destroy() {
@@ -685,7 +685,7 @@ void destroy() {
 	glDeleteTextures(1, &textureTerrainRID);
 	glDeleteTextures(1, &textureTerrainGID);
 	glDeleteTextures(1, &textureTerrainBID);
-	glDeleteTextures(1, &textureTerrainBlendMapID);
+	glDeleteTextures(1, &textureTerrainBlendMapID); //Siempre liberar la memoria
 
 	// Cube Maps Delete
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
@@ -949,21 +949,21 @@ void applicationLoop() {
 		glBindTexture(GL_TEXTURE_2D, textureTerrainBackgroundID);
 		shaderTerrain.setInt("backgroundTexture", 0);
 		// Se activa la textura de tierra
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, textureTerrainRID);
-		shaderTerrain.setInt("rTexture", 1);
+		glActiveTexture(GL_TEXTURE1); //Activar
+		glBindTexture(GL_TEXTURE_2D, textureTerrainRID); //Enlazar 
+		shaderTerrain.setInt("rTexture", 1); //Se pasa al shader, deben coincidir los id
 		// Se activa la textura de hierba
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, textureTerrainGID);
 		shaderTerrain.setInt("gTexture", 2);
 		// Se activa la textura del camino
-		glActiveTexture(GL_TEXTURE3);
+		glActiveTexture(GL_TEXTURE3); //Textura del camino (path)
 		glBindTexture(GL_TEXTURE_2D, textureTerrainBID);
-		shaderTerrain.setInt("bTexture", 3);
+		shaderTerrain.setInt("bTexture", 3); //Deben de corresponder
 		// Se activa la textura del blend map
 		glActiveTexture(GL_TEXTURE4);
 		glBindTexture(GL_TEXTURE_2D, textureTerrainBlendMapID);
-		shaderTerrain.setInt("blendMapTexture", 4);
+		shaderTerrain.setInt("blendMapTexture", 4); 
 		shaderTerrain.setVectorFloat2("scaleUV", glm::value_ptr(glm::vec2(40, 40)));
 		terrain.render();
 		shaderTerrain.setVectorFloat2("scaleUV", glm::value_ptr(glm::vec2(0, 0)));
@@ -973,7 +973,7 @@ void applicationLoop() {
 		 * Custom objects obj
 		 *******************************************/
 		//Rock render
-		matrixModelRock[3][1] = terrain.getHeightTerrain(matrixModelRock[3][0], matrixModelRock[3][2]);
+		matrixModelRock[3][1] = terrain.getHeightTerrain(matrixModelRock[3][0], matrixModelRock[3][2]); //Ajusta los modelos a la altura
 		modelRock.render(matrixModelRock);
 		// Forze to enable the unit texture to 0 always ----------------- IMPORTANT
 		glActiveTexture(GL_TEXTURE0);

@@ -1,10 +1,10 @@
 #version 330 core
 const int MAX_BONES = 100;
-layout (location = 0) in vec3 in_position;
+layout (location = 0) in vec3 in_position;  //Recibe los argumentos
 layout (location = 2) in vec2 in_uv;
 layout (location = 3) in vec3 in_normal;
 
-out vec3 our_normal;
+out vec3 our_normal; //Salida del shader 
 out vec3 fragPos;
 out vec2 our_uv;
 

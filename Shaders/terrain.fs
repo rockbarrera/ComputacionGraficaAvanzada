@@ -60,21 +60,28 @@ uniform sampler2D backgroundTexture;
 uniform sampler2D rTexture;
 uniform sampler2D gTexture;
 uniform sampler2D bTexture;
-uniform sampler2D blendMapTexture;
+uniform sampler2D blendMapTexture; //Se deben de llamar igual las variables
 
 vec3 calculateDirectionalLight(Light light, vec3 direction){
 	vec2 tiledCoords = our_uv;
 	if(tiledCoords.x != 0 && tiledCoords.y != 0)
 		tiledCoords = scaleUV * tiledCoords;
 
-	vec4 blendMapColor = texture(blendMapTexture, our_uv);
-	float backTextureAmount = 1 - (blendMapColor.r + blendMapColor.g + blendMapColor.b);
-	vec4 backgroundTextureColor = texture(backgroundTexture, tiledCoords) * backTextureAmount;
-	vec4 rTextureColor = texture(rTexture, tiledCoords) * blendMapColor.r;
-	vec4 gTextureColor = texture(gTexture, tiledCoords) * blendMapColor.g;
-	vec4 bTextureColor = texture(bTexture, tiledCoords) * blendMapColor.b;
-	vec4 totalColor = backgroundTextureColor + rTextureColor + gTextureColor + bTextureColor;
+	//vec4 blendMapColor = texture(blendMapTexture, our_uv);
+	//float backTextureAmount = 1 - (blendMapColor.r + blendMapColor.g + blendMapColor.b);
+	//vec4 backgroundTextureColor = texture(backgroundTexture, tiledCoords) * backTextureAmount;
+	//vec4 rTextureColor = texture(rTexture, tiledCoords) * blendMapColor.r;
+	//vec4 gTextureColor = texture(gTexture, tiledCoords) * blendMapColor.g;
+	//vec4 bTextureColor = texture(bTexture, tiledCoords) * blendMapColor.b;
+	//vec4 totalColor = backgroundTextureColor + rTextureColor + gTextureColor + bTextureColor;
 
+	vec4 blendMapColor = texture(blendMapTexture, our_uv);
+	float backTextureAmount = 1 - (blendMapColor.b + blendMapColor.r + blendMapColor.g); //Factor de mezcla
+	vec4 backgroundTextureColor = texture(backgroundTexture, tiledCoords) * backTextureAmount;
+	vec4 bTextureColor = texture(bTexture, tiledCoords) * blendMapColor.b;
+	vec4 rTextureColor = texture(rTexture, tiledCoords) * blendMapColor.r;
+	vec4 gTextureColor = texture(gTexture, tiledCoords) * blendMapColor.g; //A huevo
+	vec4 totalColor = backgroundTextureColor + bTextureColor + rTextureColor + gTextureColor;
 	// Ambient
     vec3 ambient  = light.ambient * vec3(totalColor);
   	
