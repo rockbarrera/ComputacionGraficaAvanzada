@@ -85,8 +85,8 @@ Model cowboyModelAnimate;
 Terrain terrain(-1,
 				-1,
 				150/*las divisiones a lo largo y ancho*/,
-				25/*la altura máxima en el eje z*/,
-				"../Textures/tester.png");/*la ruta del archivo*/
+				15/*la altura máxima en el eje z*/,
+				"../Textures/terrenoTarea.png");/*la ruta del archivo*/
 				//Se instancia un objeto tipo terreno, los dos primeros
 															//son donde queremos colocar el terreno
 															//Cada subdivision tiene una unidad, mas grande mas costo computacioneal
@@ -112,6 +112,7 @@ std::string fileNames[6] = { "../Textures/mp_bloodvalley/blood-valley_ft.tga",
 bool exitApp = false;
 int lastMousePosX, offsetX = 0;
 int lastMousePosY, offsetY = 0;
+int controlAnimation = 0; //Para el control de la animación
 
 // Model matrix definitions
 glm::mat4 matrixModelRock = glm::mat4(1.0);
@@ -280,10 +281,10 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelDartLegoRightLeg.setShader(&shaderMulLighting);
 
 	//Mayow
-	mayowModelAnimate.loadModel("../models/mayow/personaje2.fbx");
+	mayowModelAnimate.loadModel("../models/DragonitePractica/practica2clase3.fbx");
 	mayowModelAnimate.setShader(&shaderMulLighting);
 
-	cowboyModelAnimate.loadModel("../models/cowbow/Character Running.fbx"); //Se agregan otros modelos
+	cowboyModelAnimate.loadModel("../models/cowboy/Character Running.fbx"); //Se agregan otros modelos
 	cowboyModelAnimate.setShader(&shaderMulLighting);
 
 	camera->setPosition(glm::vec3(0.0, 3.0, 4.0));
@@ -682,6 +683,17 @@ bool processInput(bool continueApplication) {
 	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		modelMatrixDart = glm::translate(modelMatrixDart, glm::vec3(0.02, 0.0, 0.0));
 
+	//Cambio de animación en modelo de dragonite
+	if(glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+	{
+		controlAnimation = 0;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+	{
+		controlAnimation = 1;
+	}
+
 	glfwPollEvents();
 	return continueApplication;
 }
@@ -702,7 +714,7 @@ void applicationLoop() {
 	modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(13.0f, 0.05f, -5.0f));
 	modelMatrixMayow = glm::rotate(modelMatrixMayow, glm::radians(-90.0f), glm::vec3(0, 1, 0));
 
-	modelMatrixCowboy = glm::translate(modelMatrixCowboy, glm::vec3(13.0f, 0.05f, -5.0f)); //La traslación del modelo
+	modelMatrixCowboy = glm::translate(modelMatrixCowboy, glm::vec3(-2.0f, 0.05f, -5.0f)); //La traslación del modelo
 
 	// Variables to interpolation key frames
 	fileName = "../animaciones/animation_dart_joints.txt";
@@ -881,7 +893,7 @@ void applicationLoop() {
 		modelMatrixMayow[3][1] = terrain.getHeightTerrain(modelMatrixMayow[3][0], modelMatrixMayow[3][2]);
 		glm::mat4 modelMatrixMayowBody = glm::mat4(modelMatrixMayow);
 		modelMatrixMayowBody = glm::scale(modelMatrixMayowBody, glm::vec3(0.021, 0.021, 0.021));
-		mayowModelAnimate.setAnimationIndex(0);
+		mayowModelAnimate.setAnimationIndex(controlAnimation); //Se introduce el control de la animación
 		mayowModelAnimate.render(modelMatrixMayowBody);
 
 		modelMatrixCowboy[3][1] = terrain.getHeightTerrain(modelMatrixCowboy[3][0], modelMatrixCowboy[3][2]);
@@ -992,7 +1004,14 @@ void applicationLoop() {
 
 int main(int argc, char **argv) {
 	init(800, 700, "Window GLFW", false);
-	applicationLoop();
+	try 
+	{
+		applicationLoop();
+	}
+	catch (int e) 
+	{
+
+	}
 	destroy();
 	return 1;
 }
