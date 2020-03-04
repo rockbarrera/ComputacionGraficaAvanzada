@@ -282,7 +282,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelDartLegoRightLeg.setShader(&shaderMulLighting);
 
 	//Mayow
-	mayowModelAnimate.loadModel("../models/mayow/personaje2.fbx");
+	mayowModelAnimate.loadModel("../models/DragonitePractica/practica2clase3.fbx");
 	mayowModelAnimate.setShader(&shaderMulLighting);
 
 	//Alien
