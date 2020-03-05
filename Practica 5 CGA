@@ -1,0 +1,12 @@
+Práctica 5 multipleLigths.fs
+Agregar un spotligth al aircraft y al lambo (sacar pivote en blender)
+Hacer la animacion al aircraft para que se mueva la luz
+Ponerle luces al auto y movimiento
+Cambiar los modelos (crarlos en blender) de las lámparas, se debe ajustar al terreno
+Agregar más lámparas al camino
+	Hacer una transformacion del blendMap al terreno para poner las lámparas
+	
+	1024:200 Con su terreno y con su blendMap
+	640: x (-100)
+	
+	Tambien ver la orientación

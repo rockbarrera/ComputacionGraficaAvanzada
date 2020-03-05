@@ -1,4 +1,4 @@
-#version 330 core
+#version 330 core //Version GLSL que se usa
 
 struct Light {
     vec3 ambient; //Como se ve el objeto en ausencia de luz
@@ -7,7 +7,7 @@ struct Light {
 };
 
 struct  DirectionalLight{
-    vec3 direction;
+    vec3 direction; //Tiene posicion y debe ser unitaria
     Light light;
 };
 
@@ -36,26 +36,26 @@ struct  SpotLight{
 
 }; //Lámpara
 
-const int MAX_POINT_LIGHTS = 20;
-const int MAX_SPOT_LIGHTS = 1;
+const int MAX_POINT_LIGHTS = 20; //Máximo numero de point ligths
+const int MAX_SPOT_LIGHTS = 1; //Máximo número de spot ligths
 
-out vec4 color;
+out vec4 color; //Salida del shader
 
 in vec3 fragPos;  //Vectores de entrada vienen del vertex shader
 in vec3 our_normal;
 in vec2 our_uv;
 
 uniform int pointLightCount;
-uniform int spotLightCount;
+uniform int spotLightCount; //Tamaño máximo que va tener
 
 uniform DirectionalLight directionalLight;
-uniform PointLight pointLights[MAX_POINT_LIGHTS];
+uniform PointLight pointLights[MAX_POINT_LIGHTS]; //El arreglo donde se introducen las luces
 uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 
-uniform vec3 viewPos;  
-uniform sampler2D texture1;
+uniform vec3 viewPos;  //Posicion del observador
+uniform sampler2D texture1; 
 
-vec3 calculateDirectionalLight(Light light, vec3 direction){
+vec3 calculateDirectionalLight(Light light, vec3 direction){ //Calcula la dirección
 	// Ambient
     vec3 ambient  = light.ambient * vec3(texture(texture1, our_uv));
   	
@@ -68,15 +68,15 @@ vec3 calculateDirectionalLight(Light light, vec3 direction){
     // Specular
     float specularStrength = 0.5f;
     vec3 viewDir = normalize(viewPos - fragPos);
-    vec3 reflectDir = reflect(-lightDir, normal);  
+    vec3 reflectDir = reflect(-lightDir, normal);  //Vector de refleccion en direccion de la normal
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
     vec3 specular = light.specular * (spec * vec3(texture(texture1, our_uv)));  
         
-    return (ambient + diffuse + specular);
+    return (ambient + diffuse + specular); //La suma de los componentes
 }
 
 vec3 calculatePointLights(){
-	vec3 result = vec3(0, 0, 0);
+	vec3 result = vec3(0, 0, 0); //Iterar sobre el arreglo
 	for(int i = 0; i < pointLightCount; i++){
 		vec3 lightDir = normalize(fragPos - pointLights[i].position );
 		float distance = length(pointLights[i].position - fragPos);
@@ -92,14 +92,14 @@ vec3 calculateSpotLights(){
 		vec3 lightDir = normalize(spotLights[i].position - fragPos);
 		float theta = dot(lightDir, normalize(-spotLights[i].direction));   
 		float epsilon   = spotLights[i].cutOff - spotLights[i].outerCutOff;
-		float intensity = clamp((theta - spotLights[i].outerCutOff) / epsilon, 0.0, 1.0);   
+		float intensity = clamp((theta - spotLights[i].outerCutOff) / epsilon, 0.0, 1.0); //Acotar de 0 a 1   
 		float distance = length(spotLights[i].position - fragPos);
 		float attenuation = 1.0f / (spotLights[i].constant + spotLights[i].linear * distance + spotLights[i].quadratic * distance * distance);
 		result +=  intensity * attenuation * calculateDirectionalLight(spotLights[i].light, spotLights[i].direction);
 	}
 	return result;
-}
-
+} //Se neceita un programa independiente para debbugear
+//Debug shader visual Studio
 void main()
 {
 	vec4 colorText = texture(texture1, our_uv);
