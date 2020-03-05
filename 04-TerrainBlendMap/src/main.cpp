@@ -62,6 +62,7 @@ Model modelRock;
 Model modelAircraft;
 Model modelHeliChasis;
 Model modelHeliHeli;
+Model modelHeliHeliSmall; //Para el modelo de la hélice pequeña
 Model modelLambo;
 Model modelLamboLeftDor;
 Model modelLamboRightDor;
@@ -111,6 +112,9 @@ std::string fileNames[6] = { "../Textures/mp_bloodvalley/blood-valley_ft.tga",
 bool exitApp = false;
 int lastMousePosX, offsetX = 0;
 int lastMousePosY, offsetY = 0;
+int controlAnimation = 0; //Para el control de la animación del Dragonite
+int controlAnimation2 = 0; //Para el control de la  animación del Alien
+
 
 // Model matrix definitions
 glm::mat4 matrixModelRock = glm::mat4(1.0);
@@ -148,6 +152,7 @@ int numPasosDart = 0;
 
 // Var animate helicopter
 float rotHelHelY = 0.0;
+float rotHelHelYSmall = 0.0; //Para la rotación de la hélice pequeña
 
 // Var animate lambo dor
 int stateDoor = 0;
@@ -245,6 +250,8 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelHeliChasis.setShader(&shaderMulLighting);
 	modelHeliHeli.loadModel("../models/Helicopter/Mi_24_heli.obj");
 	modelHeliHeli.setShader(&shaderMulLighting);
+	modelHeliHeliSmall.loadModel("../models/Helicopter/small_heli.obj"); //Cargamos el modelo de la hélice pequeña
+	modelHeliHeliSmall.setShader(&shaderMulLighting);
 	// Lamborginhi
 	modelLambo.loadModel("../models/Lamborginhi_Aventador_OBJ/Lamborghini_Aventador_chasis.obj");
 	modelLambo.setShader(&shaderMulLighting);
@@ -676,6 +683,7 @@ void destroy() {
 	modelDartLegoRightLeg.destroy();
 	modelHeliChasis.destroy();
 	modelHeliHeli.destroy();
+	modelHeliHeliSmall.destroy(); //Limpiar el modelo de la hélice pequeña
 	modelLambo.destroy();
 	modelLamboFrontLeftWheel.destroy();
 	modelLamboFrontRightWheel.destroy();
@@ -771,12 +779,13 @@ bool processInput(bool continueApplication) {
 	if (enableCountSelected && glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS){
 		enableCountSelected = false;
 		modelSelected++;
-		if(modelSelected > 2)
+		if(modelSelected > 4)
 			modelSelected = 0;
 		if(modelSelected == 1)
 			fileName = "../animaciones/animation_dart_joints.txt";
 		if (modelSelected == 2)
 			fileName = "../animaciones/animation_dart.txt";
+		
 		std::cout << "modelSelected:" << modelSelected << std::endl;
 	}
 	else if(glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE)
@@ -857,6 +866,34 @@ bool processInput(bool continueApplication) {
 	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		modelMatrixDart = glm::translate(modelMatrixDart, glm::vec3(0.02, 0.0, 0.0));
 
+	if (modelSelected == 3) { //Seleccionar el modelo del Dragonite
+		if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+		{
+			controlAnimation = 0;
+		}
+
+		if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+		{
+			controlAnimation = 1;
+		}
+	}
+
+	if (modelSelected == 4) {
+		if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
+		{
+			controlAnimation2 = 0;
+		}
+		if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+		{
+			controlAnimation2 = 1;
+		}
+
+		if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+		{
+			controlAnimation2 = 2;
+		}
+	}
+
 	glfwPollEvents();
 	return continueApplication;
 }
@@ -867,6 +904,8 @@ void applicationLoop() {
 	matrixModelRock = glm::translate(matrixModelRock, glm::vec3(-3.0, 0.0, 2.0));
 
 	modelMatrixHeli = glm::translate(modelMatrixHeli, glm::vec3(5.0, 10.0, -5.0));
+	int stateHeli = 0; //Para la máquina de estados del helicóptero
+	float ascDescHeli = 10.0; //Para la traslación del helicópterO
 
 	modelMatrixAircraft = glm::translate(modelMatrixAircraft, glm::vec3(10.0, 2.0, -17.5));
 
@@ -1012,6 +1051,13 @@ void applicationLoop() {
 		modelMatrixHeliHeli = glm::translate(modelMatrixHeliHeli, glm::vec3(0.0, 0.0, 0.249548));
 		modelHeliHeli.render(modelMatrixHeliHeli);
 
+		//Para la hélice pequeña
+		glm::mat4 modelMatrixHeliHeliSmall = glm::mat4(modelMatrixHeliChasis);
+		modelMatrixHeliHeliSmall = glm::translate(modelMatrixHeliHeliSmall, glm::vec3(0.4747, 2.085, -5.647));
+		modelMatrixHeliHeliSmall = glm::rotate(modelMatrixHeliHeliSmall, rotHelHelYSmall, glm::vec3(1, 0, 0));
+		modelMatrixHeliHeliSmall = glm::translate(modelMatrixHeliHeliSmall, glm::vec3(-0.4747, -2.085, 5.647));
+		modelHeliHeliSmall.render(modelMatrixHeliHeliSmall);
+
 		// Lambo car
 		glDisable(GL_CULL_FACE);
 		glm::mat4 modelMatrixLamboChasis = glm::mat4(modelMatrixLambo);
@@ -1090,13 +1136,13 @@ void applicationLoop() {
 		modelMatrixMayow[3][1] = terrain.getHeightTerrain(modelMatrixMayow[3][0], modelMatrixMayow[3][2]);
 		glm::mat4 modelMatrixMayowBody = glm::mat4(modelMatrixMayow);
 		modelMatrixMayowBody = glm::scale(modelMatrixMayowBody, glm::vec3(0.021, 0.021, 0.021));
-		mayowModelAnimate.setAnimationIndex(0);
+		mayowModelAnimate.setAnimationIndex(controlAnimation); //Se introduce el control de la animación
 		mayowModelAnimate.render(modelMatrixMayowBody);
 
 		//Alien
 		modelMatrixAlien[3][1] = terrain.getHeightTerrain(modelMatrixAlien[3][0], modelMatrixAlien[3][2]);
 		glm::mat4 modelMatrixAlienBody = glm::mat4(modelMatrixAlien);
-		modelAlien.setAnimationIndex(1);
+		modelAlien.setAnimationIndex(controlAnimation2); //Se le pone el control de la animación  al Alien
 		modelAlien.render(modelMatrixAlienBody);
 
 		//Character
@@ -1179,6 +1225,7 @@ void applicationLoop() {
 
 		// Constantes de animaciones
 		rotHelHelY += 0.5;
+		rotHelHelYSmall += 0.5; //De la hélice pequeña
 
 		/*******************************************
 		 * State machines
@@ -1197,6 +1244,22 @@ void applicationLoop() {
 				dorRotCount = 0.0;
 				stateDoor = 0;
 			}
+			break;
+		}
+
+		//State machine for asc desc for helicopter
+		switch (stateHeli) {
+		case 0: //Cuando desciende
+			modelMatrixHeli = glm::translate(modelMatrixHeli, glm::vec3(0.0, -0.025, 0.0));
+			ascDescHeli -= 0.025;
+			if (ascDescHeli <= 0.04)
+				stateHeli = 1;
+			break;
+		case 1: // Cuando asciende
+			modelMatrixHeli = glm::translate(modelMatrixHeli, glm::vec3(0.0, 0.025, 0.0));
+			ascDescHeli += 0.025;
+			if (ascDescHeli >= 10.0)
+				stateHeli = 0;
 			break;
 		}
 
