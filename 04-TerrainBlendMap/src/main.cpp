@@ -524,7 +524,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	textureTerrainBackground.freeImage(bitmap);
 
 	// Definiendo la textura a utilizar
-	Texture textureTerrainR("../Textures/mud.png");
+	Texture textureTerrainR("../Textures/arena.jpg"); //Arena
 	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
 	bitmap = textureTerrainR.loadImage();
 	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
@@ -556,7 +556,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	textureTerrainR.freeImage(bitmap);
 
 	// Definiendo la textura a utilizar
-	Texture textureTerrainG("../Textures/grassFlowers.png");
+	Texture textureTerrainG("../Textures/lava.jpg"); //lava
 	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
 	bitmap = textureTerrainG.loadImage();
 	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
@@ -588,7 +588,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	textureTerrainG.freeImage(bitmap);
 
 	// Definiendo la textura a utilizar  //El camino azul del terreno para esa textura
-	Texture textureTerrainB("../Textures/path.png");
+	Texture textureTerrainB("../Textures/wood.jpg"); //madera
 	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
 	bitmap = textureTerrainB.loadImage();
 	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
@@ -620,7 +620,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	textureTerrainB.freeImage(bitmap);
 
 	// Definiendo la textura a utilizar
-	Texture textureTerrainBlendMap("../Textures/blendMap2.png"); //El blendmap que genera el terreno
+	Texture textureTerrainBlendMap("../Textures/blendMapP4.png"); //El blendmap que genera el terreno
 	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
 	bitmap = textureTerrainBlendMap.loadImage(); //Se convierte a mapa de bits
 	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
@@ -913,10 +913,10 @@ void applicationLoop() {
 
 	modelMatrixDart = glm::translate(modelMatrixDart, glm::vec3(3.0, 0.0, 20.0));
 
-	modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(13.0f, 0.05f, -5.0f));
+	modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(15.0f, 0.05f, -15.0f));
 	modelMatrixMayow = glm::rotate(modelMatrixMayow, glm::radians(-90.0f), glm::vec3(0, 1, 0));
 
-	modelMatrixAlien = glm::translate(modelMatrixAlien, glm::vec3(8.0f, 0.05f, -5.0f));
+	modelMatrixAlien = glm::translate(modelMatrixAlien, glm::vec3(4.0f, 0.05f, -5.0f));
 
 	modelMatrixCharacter = glm::translate(modelMatrixCharacter, glm::vec3(4.0f, 0.05f, 0.0f));
 
@@ -1135,13 +1135,14 @@ void applicationLoop() {
 		 *******************************************/
 		modelMatrixMayow[3][1] = terrain.getHeightTerrain(modelMatrixMayow[3][0], modelMatrixMayow[3][2]);
 		glm::mat4 modelMatrixMayowBody = glm::mat4(modelMatrixMayow);
-		modelMatrixMayowBody = glm::scale(modelMatrixMayowBody, glm::vec3(0.021, 0.021, 0.021));
+		modelMatrixMayowBody = glm::scale(modelMatrixMayowBody, glm::vec3(0.011, 0.011, 0.011));
 		mayowModelAnimate.setAnimationIndex(controlAnimation); //Se introduce el control de la animación
 		mayowModelAnimate.render(modelMatrixMayowBody);
 
 		//Alien
 		modelMatrixAlien[3][1] = terrain.getHeightTerrain(modelMatrixAlien[3][0], modelMatrixAlien[3][2]);
 		glm::mat4 modelMatrixAlienBody = glm::mat4(modelMatrixAlien);
+		modelMatrixAlienBody = glm::scale(modelMatrixAlienBody, glm::vec3(0.4, 0.4, 0.4));
 		modelAlien.setAnimationIndex(controlAnimation2); //Se le pone el control de la animación  al Alien
 		modelAlien.render(modelMatrixAlienBody);
 
