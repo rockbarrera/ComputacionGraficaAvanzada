@@ -1,4 +1,4 @@
-Práctica 5 multipleLigths.fs
+﻿Práctica 5 multipleLigths.fs
 Agregar un spotligth al aircraft y al lambo (sacar pivote en blender)
 Hacer la animacion al aircraft para que se mueva la luz
 Ponerle luces al auto y movimiento
@@ -10,3 +10,5 @@ Agregar más lámparas al camino
 	640: x (-100)
 	
 	Tambien ver la orientación
+Blender: 0.71511, 0.65331, 2.245
+	 -0.70048, 0.65331, 2.245
