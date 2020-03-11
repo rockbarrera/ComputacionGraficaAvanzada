@@ -152,8 +152,9 @@ int stateDoor = 0;
 float dorRotCount = 0.0;
 
 // Lamps positions, We start P5 review, components of array, 3 positions. Saved on array
-std::vector<glm::vec3> lamp1Position = { glm::vec3(-7.03, 0, -19.14), glm::vec3(
-		24.41, 0, -34.57), glm::vec3(-10.15, 0, -54.10), glm::vec3(-3.0 ,0.0, 4.0) };
+std::vector<glm::vec3> lamp1Position = { glm::vec3(/*-7.03, 0, -19.14*/70.31, 0.0, -46.093), glm::vec3(
+		/*24.41, 0, -34.57*/84.375, 0.0, -35.9375), glm::vec3(/*-10.15, 0, -54.10*/74.6093, 0.7, -17.5781),
+	   glm::vec3(/*-3.0 ,0.0, 4.0*/61.7187, 0, -23.0468) };
 std::vector<float> lamp1Orientation = { -17.0, -82.67, 23.70, 30.0 }; //In Y axis
 std::vector<glm::vec3> lamp2Position = { glm::vec3(-36.52, 0, -23.24),
 		glm::vec3(-52.73, 0, -3.90) };
@@ -524,7 +525,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	textureTerrainBackground.freeImage(bitmap);
 
 	// Definiendo la textura a utilizar
-	Texture textureTerrainR("../Textures/mud.png");
+	Texture textureTerrainR("../Textures/arena.jpg");
 	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
 	bitmap = textureTerrainR.loadImage();
 	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
@@ -556,7 +557,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	textureTerrainR.freeImage(bitmap);
 
 	// Definiendo la textura a utilizar
-	Texture textureTerrainG("../Textures/grassFlowers.png");
+	Texture textureTerrainG("../Textures/lava.jpg");
 	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
 	bitmap = textureTerrainG.loadImage();
 	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
@@ -588,7 +589,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	textureTerrainG.freeImage(bitmap);
 
 	// Definiendo la textura a utilizar
-	Texture textureTerrainB("../Textures/path.png");
+	Texture textureTerrainB("../Textures/wood.jpg");
 	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
 	bitmap = textureTerrainB.loadImage();
 	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
@@ -961,59 +962,19 @@ void applicationLoop() {
 		 * Propiedades SpotLights
 		 *******************************************/
 		glm::vec3 spotPosition = glm::vec3(modelMatrixHeli * glm::vec4(0.32437, 0.226053, 1.79149, 1.0)); //Definir la posicion del spotligth para crear un desplazamiento o pivote
+		//glm::mat4 matrixAdjustLamboR = modelMatrixLambo;
+		//matrixAdjustLamboR = glm::translate(matrixAdjustLamboR, glm::vec3(0.7674, 0.6505, 2.223));
+		//matrixAdjustLamboR = glm::rotate(matrixAdjustLamboR, rotWheelsX, glm::vec3(0, 1, 0));
+		//glm::vec3 spotPositionLamboR = glm::vec3(matrixAdjustLamboR[3]); //Para hacer también la rotación de la luz
 		glm::vec3 spotPositionLamboR = glm::vec3(modelMatrixLambo * glm::vec4(0.7674, 0.6505, 2.223, 1.0));
 		glm::vec3 spotPositionLamboL = glm::vec3(modelMatrixLambo * glm::vec4(-0.7674, 0.6505, 2.223, 1.0));
-		shaderMulLighting.setInt("spotLightCount", 1); //Mandar la cantidad de spotLigth a terreno y modelos
-		shaderTerrain.setInt("spotLightCount", 1); //Aqupi se aregan las luces
-		//shaderMulLighting.setVectorFloat3("spotLights[0].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2))); // Para que no tenga ambiental
-		//shaderMulLighting.setVectorFloat3("spotLights[0].light.diffuse", glm::value_ptr(glm::vec3(0.6, 0.6, 0.6))); 
-		//shaderMulLighting.setVectorFloat3("spotLights[0].light.specular", glm::value_ptr(glm::vec3(0.8, 0.8, 0.8)));
-		//shaderMulLighting.setVectorFloat3("spotLights[0].position", glm::value_ptr(spotPosition));
-		//shaderMulLighting.setVectorFloat3("spotLights[0].direction", glm::value_ptr(glm::vec3(0, -1, 0))); //Para que apunte hacia abajo
-		//shaderMulLighting.setFloat("spotLights[0].constant", 1.0);
-		//shaderMulLighting.setFloat("spotLights[0].linear", 0.2); //Los valores de los términos
-		//shaderMulLighting.setFloat("spotLights[0].quadratic", 0.0);
-		//shaderMulLighting.setFloat("spotLights[0].cutOff", cos(glm::radians(20.0f)));
-		//shaderMulLighting.setFloat("spotLights[0].outerCutOff", cos(glm::radians(25.0f)));
-		//shaderTerrain.setVectorFloat3("spotLights[0].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2)));
-		//shaderTerrain.setVectorFloat3("spotLights[0].light.diffuse", glm::value_ptr(glm::vec3(0.6, 0.6, 0.6)));
-		//shaderTerrain.setVectorFloat3("spotLights[0].light.specular", glm::value_ptr(glm::vec3(0.8, 0.8, 0.8)));
-		//shaderTerrain.setVectorFloat3("spotLights[0].position", glm::value_ptr(spotPosition));
-		//shaderTerrain.setVectorFloat3("spotLights[0].direction", glm::value_ptr(glm::vec3(0, -1, 0)));
-		//shaderTerrain.setFloat("spotLights[0].constant", 1.0);
-		//shaderTerrain.setFloat("spotLights[0].linear", 0.2);
-		//shaderTerrain.setFloat("spotLights[0].quadratic", 0.0);
-		//shaderTerrain.setFloat("spotLights[0].cutOff", cos(glm::radians(20.0f)));
-		//shaderTerrain.setFloat("spotLights[0].outerCutOff", cos(glm::radians(25.0f)));
-
-		//Faro derecho
-		//shaderMulLighting.setVectorFloat3("spotLights[1].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2))); // Para que no tenga ambiental
-		//shaderMulLighting.setVectorFloat3("spotLights[1].light.diffuse", glm::value_ptr(glm::vec3(0.6, 0.6, 0.6)));
-		//shaderMulLighting.setVectorFloat3("spotLights[1].light.specular", glm::value_ptr(glm::vec3(0.8, 0.8, 0.8)));
-		//shaderMulLighting.setVectorFloat3("spotLights[1].position", glm::value_ptr(spotPositionLamboR));
-		//shaderMulLighting.setVectorFloat3("spotLights[1].direction", glm::value_ptr(glm::vec3(0, 0, 1))); //Para que apunte hacia el frente
-		//shaderMulLighting.setFloat("spotLights[1].constant", 1.0);
-		//shaderMulLighting.setFloat("spotLights[1].linear", 0.2); //Los valores de los términos
-		//shaderMulLighting.setFloat("spotLights[1].quadratic", 0.0);
-		//shaderMulLighting.setFloat("spotLights[1].cutOff", cos(glm::radians(20.0f)));
-		//shaderMulLighting.setFloat("spotLights[1].outerCutOff", cos(glm::radians(25.0f)));
-		//shaderTerrain.setVectorFloat3("spotLights[1].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2)));
-		//shaderTerrain.setVectorFloat3("spotLights[1].light.diffuse", glm::value_ptr(glm::vec3(0.6, 0.6, 0.6)));
-		//shaderTerrain.setVectorFloat3("spotLights[1].light.specular", glm::value_ptr(glm::vec3(0.8, 0.8, 0.8)));
-		//shaderTerrain.setVectorFloat3("spotLights[1].position", glm::value_ptr(spotPositionLamboR));
-		//shaderTerrain.setVectorFloat3("spotLights[1].direction", glm::value_ptr(glm::vec3(0, 0, 1)));
-		//shaderTerrain.setFloat("spotLights[1].constant", 1.0);
-		//shaderTerrain.setFloat("spotLights[1].linear", 0.2);
-		//shaderTerrain.setFloat("spotLights[1].quadratic", 0.0);
-		//shaderTerrain.setFloat("spotLights[1].cutOff", cos(glm::radians(20.0f)));
-		//shaderTerrain.setFloat("spotLights[1].outerCutOff", cos(glm::radians(25.0f)));
-
-		//Faro Izquierdo
+		shaderMulLighting.setInt("spotLightCount", 3); //Mandar la cantidad de spotLigth a terreno y modelos
+		shaderTerrain.setInt("spotLightCount", 3); //Aqupi se aregan las luces
 		shaderMulLighting.setVectorFloat3("spotLights[0].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2))); // Para que no tenga ambiental
-		shaderMulLighting.setVectorFloat3("spotLights[0].light.diffuse", glm::value_ptr(glm::vec3(0.6, 0.6, 0.6)));
+		shaderMulLighting.setVectorFloat3("spotLights[0].light.diffuse", glm::value_ptr(glm::vec3(0.6, 0.6, 0.6))); 
 		shaderMulLighting.setVectorFloat3("spotLights[0].light.specular", glm::value_ptr(glm::vec3(0.8, 0.8, 0.8)));
-		shaderMulLighting.setVectorFloat3("spotLights[0].position", glm::value_ptr(spotPositionLamboL));
-		shaderMulLighting.setVectorFloat3("spotLights[0].direction", glm::value_ptr(glm::vec3(0, 0, 1))); //Para que apunte hacia el frente
+		shaderMulLighting.setVectorFloat3("spotLights[0].position", glm::value_ptr(spotPosition));
+		shaderMulLighting.setVectorFloat3("spotLights[0].direction", glm::value_ptr(glm::vec3(0, -1, 0))); //Para que apunte hacia abajo
 		shaderMulLighting.setFloat("spotLights[0].constant", 1.0);
 		shaderMulLighting.setFloat("spotLights[0].linear", 0.2); //Los valores de los términos
 		shaderMulLighting.setFloat("spotLights[0].quadratic", 0.0);
@@ -1022,13 +983,57 @@ void applicationLoop() {
 		shaderTerrain.setVectorFloat3("spotLights[0].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2)));
 		shaderTerrain.setVectorFloat3("spotLights[0].light.diffuse", glm::value_ptr(glm::vec3(0.6, 0.6, 0.6)));
 		shaderTerrain.setVectorFloat3("spotLights[0].light.specular", glm::value_ptr(glm::vec3(0.8, 0.8, 0.8)));
-		shaderTerrain.setVectorFloat3("spotLights[0].position", glm::value_ptr(spotPositionLamboL));
-		shaderTerrain.setVectorFloat3("spotLights[0].direction", glm::value_ptr(glm::vec3(0, 0, 1)));
+		shaderTerrain.setVectorFloat3("spotLights[0].position", glm::value_ptr(spotPosition));
+		shaderTerrain.setVectorFloat3("spotLights[0].direction", glm::value_ptr(glm::vec3(0, -1, 0)));
 		shaderTerrain.setFloat("spotLights[0].constant", 1.0);
 		shaderTerrain.setFloat("spotLights[0].linear", 0.2);
 		shaderTerrain.setFloat("spotLights[0].quadratic", 0.0);
 		shaderTerrain.setFloat("spotLights[0].cutOff", cos(glm::radians(20.0f)));
 		shaderTerrain.setFloat("spotLights[0].outerCutOff", cos(glm::radians(25.0f)));
+
+		//Faro derecho
+		shaderMulLighting.setVectorFloat3("spotLights[1].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2))); // Para que no tenga ambiental
+		shaderMulLighting.setVectorFloat3("spotLights[1].light.diffuse", glm::value_ptr(glm::vec3(0.6, 0.6, 0.6)));
+		shaderMulLighting.setVectorFloat3("spotLights[1].light.specular", glm::value_ptr(glm::vec3(0.8, 0.8, 0.8)));
+		shaderMulLighting.setVectorFloat3("spotLights[1].position", glm::value_ptr(spotPositionLamboR));
+		shaderMulLighting.setVectorFloat3("spotLights[1].direction", glm::value_ptr(glm::vec3(0, 0, 1))); //Para que apunte hacia el frente
+		shaderMulLighting.setFloat("spotLights[1].constant", 1.0);
+		shaderMulLighting.setFloat("spotLights[1].linear", 0.2); //Los valores de los términos
+		shaderMulLighting.setFloat("spotLights[1].quadratic", 0.0);
+		shaderMulLighting.setFloat("spotLights[1].cutOff", cos(glm::radians(20.0f)));
+		shaderMulLighting.setFloat("spotLights[1].outerCutOff", cos(glm::radians(25.0f)));
+		shaderTerrain.setVectorFloat3("spotLights[1].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2)));
+		shaderTerrain.setVectorFloat3("spotLights[1].light.diffuse", glm::value_ptr(glm::vec3(0.6, 0.6, 0.6)));
+		shaderTerrain.setVectorFloat3("spotLights[1].light.specular", glm::value_ptr(glm::vec3(0.8, 0.8, 0.8)));
+		shaderTerrain.setVectorFloat3("spotLights[1].position", glm::value_ptr(spotPositionLamboR));
+		shaderTerrain.setVectorFloat3("spotLights[1].direction", glm::value_ptr(glm::vec3(0, 0, 1)));
+		shaderTerrain.setFloat("spotLights[1].constant", 1.0);
+		shaderTerrain.setFloat("spotLights[1].linear", 0.2);
+		shaderTerrain.setFloat("spotLights[1].quadratic", 0.0);
+		shaderTerrain.setFloat("spotLights[1].cutOff", cos(glm::radians(20.0f)));
+		shaderTerrain.setFloat("spotLights[1].outerCutOff", cos(glm::radians(25.0f)));
+
+		//Faro Izquierdo
+		shaderMulLighting.setVectorFloat3("spotLights[2].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2))); // Para que no tenga ambiental
+		shaderMulLighting.setVectorFloat3("spotLights[2].light.diffuse", glm::value_ptr(glm::vec3(0.6, 0.6, 0.6)));
+		shaderMulLighting.setVectorFloat3("spotLights[2].light.specular", glm::value_ptr(glm::vec3(0.8, 0.8, 0.8)));
+		shaderMulLighting.setVectorFloat3("spotLights[2].position", glm::value_ptr(spotPositionLamboL));
+		shaderMulLighting.setVectorFloat3("spotLights[2].direction", glm::value_ptr(glm::vec3(0, 0, 1))); //Para que apunte hacia el frente
+		shaderMulLighting.setFloat("spotLights[2].constant", 1.0);
+		shaderMulLighting.setFloat("spotLights[2].linear", 0.2); //Los valores de los términos
+		shaderMulLighting.setFloat("spotLights[2].quadratic", 0.0);
+		shaderMulLighting.setFloat("spotLights[2].cutOff", cos(glm::radians(20.0f)));
+		shaderMulLighting.setFloat("spotLights[2].outerCutOff", cos(glm::radians(25.0f)));
+		shaderTerrain.setVectorFloat3("spotLights[2].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2)));
+		shaderTerrain.setVectorFloat3("spotLights[2].light.diffuse", glm::value_ptr(glm::vec3(0.6, 0.6, 0.6)));
+		shaderTerrain.setVectorFloat3("spotLights[2].light.specular", glm::value_ptr(glm::vec3(0.8, 0.8, 0.8)));
+		shaderTerrain.setVectorFloat3("spotLights[2].position", glm::value_ptr(spotPositionLamboL));
+		shaderTerrain.setVectorFloat3("spotLights[2].direction", glm::value_ptr(glm::vec3(0, 0, 1)));
+		shaderTerrain.setFloat("spotLights[2].constant", 1.0);
+		shaderTerrain.setFloat("spotLights[2].linear", 0.2);
+		shaderTerrain.setFloat("spotLights[2].quadratic", 0.0);
+		shaderTerrain.setFloat("spotLights[2].cutOff", cos(glm::radians(20.0f)));
+		shaderTerrain.setFloat("spotLights[2].outerCutOff", cos(glm::radians(25.0f)));
 
 		/*******************************************
 		 * Propiedades PointLights
@@ -1351,6 +1356,7 @@ void applicationLoop() {
 			break;
 		case 1: //Avanzar
 			modelMatrixLambo = glm::translate(modelMatrixLambo/*matriz acumulable*/, glm::vec3(0.0, 0.0, 0.1));
+			
 			advanceCount += 0.1;
 			rotWheelsX += 0.05;
 			rotWheelsY -= 0.02;
