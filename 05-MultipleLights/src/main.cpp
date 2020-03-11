@@ -152,13 +152,18 @@ int stateDoor = 0;
 float dorRotCount = 0.0;
 
 // Lamps positions, We start P5 review, components of array, 3 positions. Saved on array
-std::vector<glm::vec3> lamp1Position = { glm::vec3(/*-7.03, 0, -19.14*/70.31, 0.0, -46.093), glm::vec3(
-		/*24.41, 0, -34.57*/84.375, 0.0, -35.9375), glm::vec3(/*-10.15, 0, -54.10*/74.6093, 0.7, -17.5781),
-	   glm::vec3(/*-3.0 ,0.0, 4.0*/61.7187, 0, -23.0468) };
-std::vector<float> lamp1Orientation = { -17.0, -82.67, 23.70, 30.0 }; //In Y axis
-std::vector<glm::vec3> lamp2Position = { glm::vec3(-36.52, 0, -23.24),
-		glm::vec3(-52.73, 0, -3.90) };
-std::vector<float> lamp2Orientation = {21.37 + 90, -65.0 + 90}; //Es la orientación del objeto
+std::vector<glm::vec3> lamp1Position = { glm::vec3(70.31, 0.0, -46.093), 
+										 glm::vec3(84.375, 0.0, -35.9375), 
+									     glm::vec3(74.6093, 0.7, -17.5781),
+									     glm::vec3(61.7187, 0.0, -23.0468),
+										 glm::vec3(53.90625, 0.0, 13.6718),
+										 glm::vec3(72.2656, 0.0, 19.53125)};
+std::vector<float> lamp1Orientation = { -17.0, -82.67, 23.70, 30.0, -17.0, 0.0 }; //In Y axis
+std::vector<glm::vec3> lamp2Position = { glm::vec3(35.7421, 0, -55.6),
+										 glm::vec3(-13.4765, 0, 13.2812),
+										 glm::vec3(-11.914, 0, -26.3671)
+										};
+std::vector<float> lamp2Orientation = {21.37 + 90, -65.0, 90.0}; //Es la orientación del objeto
 
 double deltaTime;
 double currTime, lastTime;
