@@ -37,7 +37,7 @@ struct  SpotLight{
 }; //Lámpara
 
 const int MAX_POINT_LIGHTS = 20; //Máximo numero de point ligths
-const int MAX_SPOT_LIGHTS = 3; //Máximo número de spot ligths
+const int MAX_SPOT_LIGHTS = 4; //Máximo número de spot ligths
 
 out vec4 color; //Salida del shader
 

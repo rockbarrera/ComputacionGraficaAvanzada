@@ -967,14 +967,15 @@ void applicationLoop() {
 		 * Propiedades SpotLights
 		 *******************************************/
 		glm::vec3 spotPosition = glm::vec3(modelMatrixHeli * glm::vec4(0.32437, 0.226053, 1.79149, 1.0)); //Definir la posicion del spotligth para crear un desplazamiento o pivote
-		//glm::mat4 matrixAdjustLamboR = modelMatrixLambo;
+		//glm::mat4 matrixAdjustLamboR = glm::mat4(1.0f);
 		//matrixAdjustLamboR = glm::translate(matrixAdjustLamboR, glm::vec3(0.7674, 0.6505, 2.223));
 		//matrixAdjustLamboR = glm::rotate(matrixAdjustLamboR, rotWheelsX, glm::vec3(0, 1, 0));
 		//glm::vec3 spotPositionLamboR = glm::vec3(matrixAdjustLamboR[3]); //Para hacer también la rotación de la luz
 		glm::vec3 spotPositionLamboR = glm::vec3(modelMatrixLambo * glm::vec4(0.7674, 0.6505, 2.223, 1.0));
 		glm::vec3 spotPositionLamboL = glm::vec3(modelMatrixLambo * glm::vec4(-0.7674, 0.6505, 2.223, 1.0));
-		shaderMulLighting.setInt("spotLightCount", 3); //Mandar la cantidad de spotLigth a terreno y modelos
-		shaderTerrain.setInt("spotLightCount", 3); //Aqupi se aregan las luces
+		glm::vec3 spotPositionAircraft = glm::vec3(modelMatrixAircraft * glm::vec4(0.005537, -0.409711, -2.71365, 1.0));
+		shaderMulLighting.setInt("spotLightCount", 4); //Mandar la cantidad de spotLigth a terreno y modelos
+		shaderTerrain.setInt("spotLightCount", 4); //Aqupi se aregan las luces
 		shaderMulLighting.setVectorFloat3("spotLights[0].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2))); // Para que no tenga ambiental
 		shaderMulLighting.setVectorFloat3("spotLights[0].light.diffuse", glm::value_ptr(glm::vec3(0.6, 0.6, 0.6))); 
 		shaderMulLighting.setVectorFloat3("spotLights[0].light.specular", glm::value_ptr(glm::vec3(0.8, 0.8, 0.8)));
@@ -1039,6 +1040,28 @@ void applicationLoop() {
 		shaderTerrain.setFloat("spotLights[2].quadratic", 0.0);
 		shaderTerrain.setFloat("spotLights[2].cutOff", cos(glm::radians(20.0f)));
 		shaderTerrain.setFloat("spotLights[2].outerCutOff", cos(glm::radians(25.0f)));
+
+		//Spot del aircraft
+		shaderMulLighting.setVectorFloat3("spotLights[3].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2))); // Para que no tenga ambiental
+		shaderMulLighting.setVectorFloat3("spotLights[3].light.diffuse", glm::value_ptr(glm::vec3(0.6, 0.6, 0.6)));
+		shaderMulLighting.setVectorFloat3("spotLights[3].light.specular", glm::value_ptr(glm::vec3(0.8, 0.8, 0.8)));
+		shaderMulLighting.setVectorFloat3("spotLights[3].position", glm::value_ptr(spotPositionAircraft));
+		shaderMulLighting.setVectorFloat3("spotLights[3].direction", glm::value_ptr(glm::vec3(0, -1, 0))); //Para que apunte hacia el frente
+		shaderMulLighting.setFloat("spotLights[3].constant", 1.0);
+		shaderMulLighting.setFloat("spotLights[3].linear", 0.2); //Los valores de los términos
+		shaderMulLighting.setFloat("spotLights[3].quadratic", 0.0);
+		shaderMulLighting.setFloat("spotLights[3].cutOff", cos(glm::radians(20.0f)));
+		shaderMulLighting.setFloat("spotLights[3].outerCutOff", cos(glm::radians(25.0f)));
+		shaderTerrain.setVectorFloat3("spotLights[3].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2)));
+		shaderTerrain.setVectorFloat3("spotLights[3].light.diffuse", glm::value_ptr(glm::vec3(0.6, 0.6, 0.6)));
+		shaderTerrain.setVectorFloat3("spotLights[3].light.specular", glm::value_ptr(glm::vec3(0.8, 0.8, 0.8)));
+		shaderTerrain.setVectorFloat3("spotLights[3].position", glm::value_ptr(spotPositionAircraft));
+		shaderTerrain.setVectorFloat3("spotLights[3].direction", glm::value_ptr(glm::vec3(0, -1, 0)));
+		shaderTerrain.setFloat("spotLights[3].constant", 1.0);
+		shaderTerrain.setFloat("spotLights[3].linear", 0.2);
+		shaderTerrain.setFloat("spotLights[3].quadratic", 0.0);
+		shaderTerrain.setFloat("spotLights[3].cutOff", cos(glm::radians(20.0f)));
+		shaderTerrain.setFloat("spotLights[3].outerCutOff", cos(glm::radians(25.0f)));
 
 		/*******************************************
 		 * Propiedades PointLights
