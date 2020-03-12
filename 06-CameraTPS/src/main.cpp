@@ -54,7 +54,8 @@ Shader shaderMulLighting;
 //Shader para el terreno
 Shader shaderTerrain;
 
-std::shared_ptr<Camera> camera(new ThirdPersonCamera());
+std::shared_ptr<Camera> camera(new ThirdPersonCamera()); //Se declara la cámara de tercera persona
+std::shared_ptr<Camera> cameraFPS(new FirstPersonCamera());
 float distanceFromTarget = 7.0;
 
 Sphere skyboxSphere(20, 20);
@@ -88,6 +89,7 @@ Model modelLampPost2;
 // Model animate instance
 // Mayow
 Model mayowModelAnimate;
+Model cowBoyModelAnimate;
 // Terrain model instance
 Terrain terrain(-1, -1, 200, 8, "../Textures/heightmap.png");
 
@@ -121,6 +123,7 @@ glm::mat4 modelMatrixLambo = glm::mat4(1.0);
 glm::mat4 modelMatrixAircraft = glm::mat4(1.0);
 glm::mat4 modelMatrixDart = glm::mat4(1.0f);
 glm::mat4 modelMatrixMayow = glm::mat4(1.0f);
+glm::mat4 modelMatrixCawboy = glm::mat4(1.0f);
 
 int animationIndex = 1;
 float rotDartHead = 0.0, rotDartLeftArm = 0.0, rotDartLeftHand = 0.0, rotDartRightArm = 0.0, rotDartRightHand = 0.0, rotDartLeftLeg = 0.0, rotDartRightLeg = 0.0;
@@ -304,9 +307,15 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	mayowModelAnimate.loadModel("../models/mayow/personaje2.fbx");
 	mayowModelAnimate.setShader(&shaderMulLighting);
 
+	//Cowboy
+	cowBoyModelAnimate.loadModel("../models/cowboy/Character Running.fbx");
+	cowBoyModelAnimate.setShader(&shaderMulLighting);
+
 	camera->setPosition(glm::vec3(0.0, 0.0, 10.0));
 	camera->setDistanceFromTarget(distanceFromTarget);
 	camera->setSensitivity(1.0);
+
+	cameraFPS->setPosition(glm::vec3(0.0, 3.0, 4.0));
 
 	// Definimos el tamanio de la imagen
 	int imageWidth, imageHeight;
@@ -700,6 +709,7 @@ void destroy() {
 	modelLamp1.destroy();
 	modelLamp2.destroy();
 	modelLampPost2.destroy();
+	cowBoyModelAnimate.destroy();
 
 	// Custom objects animate
 	mayowModelAnimate.destroy();
@@ -784,12 +794,15 @@ bool processInput(bool continueApplication) {
 	if (enableCountSelected && glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS){
 		enableCountSelected = false;
 		modelSelected++;
-		if(modelSelected > 2)
+		camera->setAngleArroundTarget(0.0);
+		if(modelSelected > 3)
 			modelSelected = 0;
 		if(modelSelected == 1)
 			fileName = "../animaciones/animation_dart_joints.txt";
 		if (modelSelected == 2)
 			fileName = "../animaciones/animation_dart.txt";
+		if (modelSelected == 3)
+			
 		std::cout << "modelSelected:" << modelSelected << std::endl;
 	}
 	else if(glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE)
@@ -885,6 +898,19 @@ bool processInput(bool continueApplication) {
 		animationIndex = 0;
 	}
 
+	//Cowboy animate model
+	if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+		modelMatrixCawboy = glm::rotate(modelMatrixCawboy, glm::radians(1.0f), glm::vec3(0, 1, 0));		
+	}
+	else if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+		modelMatrixCawboy = glm::rotate(modelMatrixCawboy, glm::radians(-1.0f), glm::vec3(0, 1, 0));		
+	}if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+		modelMatrixCawboy = glm::translate(modelMatrixCawboy, glm::vec3(0, 0, 0.02));		
+	}
+	else if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+		modelMatrixCawboy = glm::translate(modelMatrixCawboy, glm::vec3(0, 0, -0.02));		
+	}
+
 	glfwPollEvents();
 	return continueApplication;
 }
@@ -909,6 +935,8 @@ void applicationLoop() {
 
 	modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(13.0f, 0.05f, -5.0f));
 	modelMatrixMayow = glm::rotate(modelMatrixMayow, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+
+	modelMatrixCawboy = glm::translate(modelMatrixCawboy, glm::vec3(-6.0, 0.0, -6.0));
 
 	// Variables to interpolation key frames
 	fileName = "../animaciones/animation_dart_joints.txt";
@@ -941,22 +969,29 @@ void applicationLoop() {
 			angleTarget = glm::angle(glm::quat_cast(modelMatrixDart));
 			target = modelMatrixDart[3];
 		}
+		else if(modelSelected == 3){
+			axis = glm::axis(glm::quat_cast(modelMatrixCawboy)); //Eje
+			angleTarget = glm::angle(glm::quat_cast(modelMatrixCawboy)); //Ángulo del cuaternion
+			target = modelMatrixCawboy[3];
+		}
 		else{
 			axis = glm::axis(glm::quat_cast(modelMatrixMayow));
 			angleTarget = glm::angle(glm::quat_cast(modelMatrixMayow));
 			target = modelMatrixMayow[3];
 		}
 
-		if(std::isnan(angleTarget))
-			angleTarget = 0.0;
-		if(axis.y < 0)
-			angleTarget = -angleTarget;
+		if(std::isnan(angleTarget)) //Verificar si es un número
+			angleTarget = 0.0; //Se pone 0
+		if(axis.y < 0) //Si es menor a cero
+			angleTarget = -angleTarget; //Negar el ángulo
 		if(modelSelected == 1)
 			angleTarget -= glm::radians(90.0f);
-		camera->setCameraTarget(target);
-		camera->setAngleTarget(angleTarget);
+		camera->setCameraTarget(target); //Se manda los valores del target
+		camera->setAngleTarget(angleTarget); //Se manda el ángulo
 		camera->updateCamera();
 		view = camera->getViewMatrix();
+
+		//camera
 
 		// Settea la matriz de vista y projection al shader con solo color
 		shader.setMatrix4("projection", 1, false, glm::value_ptr(projection));
@@ -1220,6 +1255,12 @@ void applicationLoop() {
 		modelMatrixMayowBody = glm::scale(modelMatrixMayowBody, glm::vec3(0.021, 0.021, 0.021));
 		mayowModelAnimate.setAnimationIndex(animationIndex);
 		mayowModelAnimate.render(modelMatrixMayowBody);
+
+		//Cowboy
+		modelMatrixCawboy[3][1] /*osicion en y*/ = terrain.getHeightTerrain(modelMatrixCawboy[3][0], modelMatrixCawboy[3][2]);
+		glm::mat4 modelMatrixCowboyBody = glm::mat4(modelMatrixCawboy);
+		modelMatrixCowboyBody = glm::scale(modelMatrixCowboyBody, glm::vec3(0.0025, 0.0025, 0.0025));
+		cowBoyModelAnimate.render(modelMatrixCowboyBody);
 
 		/*******************************************
 		 * Skybox

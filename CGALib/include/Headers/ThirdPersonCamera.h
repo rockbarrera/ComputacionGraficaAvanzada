@@ -35,6 +35,9 @@ public:
     void mouseMoveCamera(float xoffset, float yoffset, float dt);
     void scrollMoveCamera(float soffset, float dt);
     void updateCamera();
+    void setAngle(float angleAroundTarget) {
+        this->angleAroundTarget = angleAroundTarget;
+    };
 };
 
 #endif // THIRDPERSONCAMERA_H

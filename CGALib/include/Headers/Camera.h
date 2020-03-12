@@ -107,6 +107,10 @@ public:
 		this->distanceFromTarget = distanceFromTarget;
 	}
 
+	void setAngleArroundTarget(float angleAroundTarget) {
+		this->angleAroundTarget = angleAroundTarget;
+	}
+
 protected:
 	glm::vec3 position;
 	glm::vec3 front;
