@@ -1,0 +1,29 @@
+EL cull face se modela en sentido a las manecillas del reloj
+Con el scroll se acerca y se aleja, en algún momento se indetermina
+Con las teclas gira y avanza
+La cámara se mueve con el objetivo
+Se deja a libre eleecion la FPC t TPC
+
+Modelo
+Matriz trans
+Inicializar
+Cargar modelo
+Poner shader
+
+quat_cast para convertir a cuaternion
+el eje para saber si es sentido positivo o negativo
+
+las ultimas 3 componentes de la matriz de modelo es la traslación
+
+setear el angleArroundTarget
+
+Modelo mixamo(fbx)
+	-Caminando
+	-Corriendo
+
+cambiar la animacion cuando camine y cuando esté en reposo
+usar su blendmap y mapa de alturas y modelos previos
+
+con la l primera persona y con la k en tercera persona
+
+setear a 0 el pitch y distance from target

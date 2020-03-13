@@ -967,10 +967,6 @@ void applicationLoop() {
 		 * Propiedades SpotLights
 		 *******************************************/
 		glm::vec3 spotPosition = glm::vec3(modelMatrixHeli * glm::vec4(0.32437, 0.226053, 1.79149, 1.0)); //Definir la posicion del spotligth para crear un desplazamiento o pivote
-		//glm::mat4 matrixAdjustLamboR = glm::mat4(1.0f);
-		//matrixAdjustLamboR = glm::translate(matrixAdjustLamboR, glm::vec3(0.7674, 0.6505, 2.223));
-		//matrixAdjustLamboR = glm::rotate(matrixAdjustLamboR, rotWheelsX, glm::vec3(0, 1, 0));
-		//glm::vec3 spotPositionLamboR = glm::vec3(matrixAdjustLamboR[3]); //Para hacer también la rotación de la luz
 		glm::vec3 spotPositionLamboR = glm::vec3(modelMatrixLambo * glm::vec4(0.7674, 0.6505, 2.223, 1.0));
 		glm::vec3 spotPositionLamboL = glm::vec3(modelMatrixLambo * glm::vec4(-0.7674, 0.6505, 2.223, 1.0));
 		glm::vec3 spotPositionAircraft = glm::vec3(modelMatrixAircraft * glm::vec4(0.005537, -0.409711, -2.71365, 1.0));
