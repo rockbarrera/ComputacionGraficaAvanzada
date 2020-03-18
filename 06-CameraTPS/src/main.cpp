@@ -55,7 +55,10 @@ Shader shaderMulLighting;
 Shader shaderTerrain;
 
 std::shared_ptr<Camera> camera(new ThirdPersonCamera()); //Se declara la cámara de tercera persona
-std::shared_ptr<Camera> cameraFPS(new FirstPersonCamera());
+std::shared_ptr<FirstPersonCamera> cameraFPS(new FirstPersonCamera());
+
+int stateCamera = 1; //1 para la TPS y 2 para la FPS
+
 float distanceFromTarget = 7.0;
 
 Sphere skyboxSphere(20, 20);
@@ -783,6 +786,31 @@ bool processInput(bool continueApplication) {
 		return false;
 	}
 
+	//Seleccionar cámara TPS ó FPS
+	if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS) {
+		stateCamera = 1;
+	}
+	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
+		stateCamera = 2;
+	}
+
+	if (stateCamera == 2) {
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+			cameraFPS->moveFrontCamera(true, deltaTime);
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+			cameraFPS->moveFrontCamera(false, deltaTime);
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+			cameraFPS->moveRightCamera(false, deltaTime);
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+			cameraFPS->moveRightCamera(true, deltaTime);
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+			cameraFPS->mouseMoveCamera(offsetX, offsetY, deltaTime);
+		offsetX = 0;
+		offsetY = 0;
+	}
+	
+
+
 	if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 		camera->mouseMoveCamera(offsetX, 0.0, deltaTime);
 	if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
@@ -989,7 +1017,14 @@ void applicationLoop() {
 		camera->setCameraTarget(target); //Se manda los valores del target
 		camera->setAngleTarget(angleTarget); //Se manda el ángulo
 		camera->updateCamera();
-		view = camera->getViewMatrix();
+		if (stateCamera == 1) { //La matriz de vista varía dependiendo de la selección de la cámara
+			view = camera->getViewMatrix();
+		}
+
+		if (stateCamera == 2) {
+			view = cameraFPS->getViewMatrix();
+		}
+		
 
 		//camera
 
@@ -1016,7 +1051,12 @@ void applicationLoop() {
 		/*******************************************
 		 * Propiedades Luz direccional
 		 *******************************************/
-		shaderMulLighting.setVectorFloat3("viewPos", glm::value_ptr(camera->getPosition()));
+		if (stateCamera == 1) { //La selección de la cámara
+			shaderMulLighting.setVectorFloat3("viewPos", glm::value_ptr(camera->getPosition()));
+		}
+		if (stateCamera == 2) {
+			shaderMulLighting.setVectorFloat3("viewPos", glm::value_ptr(cameraFPS->getPosition()));
+		}
 		shaderMulLighting.setVectorFloat3("directionalLight.light.ambient", glm::value_ptr(glm::vec3(0.05, 0.05, 0.05)));
 		shaderMulLighting.setVectorFloat3("directionalLight.light.diffuse", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
 		shaderMulLighting.setVectorFloat3("directionalLight.light.specular", glm::value_ptr(glm::vec3(0.4, 0.4, 0.4)));
@@ -1025,7 +1065,12 @@ void applicationLoop() {
 		/*******************************************
 		 * Propiedades Luz direccional Terrain
 		 *******************************************/
-		shaderTerrain.setVectorFloat3("viewPos", glm::value_ptr(camera->getPosition()));
+		if (stateCamera == 1) { //La selección de la cámara
+			shaderTerrain.setVectorFloat3("viewPos", glm::value_ptr(camera->getPosition()));
+		}
+		if (stateCamera == 2) {
+			shaderTerrain.setVectorFloat3("viewPos", glm::value_ptr(cameraFPS->getPosition()));
+		}
 		shaderTerrain.setVectorFloat3("directionalLight.light.ambient", glm::value_ptr(glm::vec3(0.05, 0.05, 0.05)));
 		shaderTerrain.setVectorFloat3("directionalLight.light.diffuse", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
 		shaderTerrain.setVectorFloat3("directionalLight.light.specular", glm::value_ptr(glm::vec3(0.4, 0.4, 0.4)));
