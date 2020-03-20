@@ -93,6 +93,7 @@ Model modelLampPost2;
 // Mayow
 Model mayowModelAnimate;
 Model cowBoyModelAnimate;
+Model chunliModelAnimate;
 // Terrain model instance
 Terrain terrain(-1, -1, 200, 8, "../Textures/heightmap.png");
 
@@ -127,6 +128,7 @@ glm::mat4 modelMatrixAircraft = glm::mat4(1.0);
 glm::mat4 modelMatrixDart = glm::mat4(1.0f);
 glm::mat4 modelMatrixMayow = glm::mat4(1.0f);
 glm::mat4 modelMatrixCawboy = glm::mat4(1.0f);
+glm::mat4 modelMatrixChunli = glm::mat4(1.0f);
 
 int animationIndex = 1;
 float rotDartHead = 0.0, rotDartLeftArm = 0.0, rotDartLeftHand = 0.0, rotDartRightArm = 0.0, rotDartRightHand = 0.0, rotDartLeftLeg = 0.0, rotDartRightLeg = 0.0;
@@ -313,6 +315,10 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	//Cowboy
 	cowBoyModelAnimate.loadModel("../models/cowboy/Character Running.fbx");
 	cowBoyModelAnimate.setShader(&shaderMulLighting);
+
+	//Chunli
+	chunliModelAnimate.loadModel("../models/Chunly/CHUNLI.fbx");
+	chunliModelAnimate.setShader(&shaderMulLighting);
 
 	camera->setPosition(glm::vec3(0.0, 0.0, 10.0));
 	camera->setDistanceFromTarget(distanceFromTarget);
@@ -966,6 +972,8 @@ void applicationLoop() {
 
 	modelMatrixCawboy = glm::translate(modelMatrixCawboy, glm::vec3(-6.0, 0.0, -6.0));
 
+	modelMatrixChunli = glm::translate(modelMatrixChunli, glm::vec3(1.0, 0.0, 1.0));
+
 	// Variables to interpolation key frames
 	fileName = "../animaciones/animation_dart_joints.txt";
 	keyFramesDartJoints = getKeyRotFrames(fileName);
@@ -1306,6 +1314,12 @@ void applicationLoop() {
 		glm::mat4 modelMatrixCowboyBody = glm::mat4(modelMatrixCawboy);
 		modelMatrixCowboyBody = glm::scale(modelMatrixCowboyBody, glm::vec3(0.0025, 0.0025, 0.0025));
 		cowBoyModelAnimate.render(modelMatrixCowboyBody);
+
+		modelMatrixChunli[3][1] = terrain.getHeightTerrain(modelMatrixChunli[3][0], modelMatrixChunli[3][2]);
+		glm::mat4 modelMatrixChunliBody = glm::mat4(modelMatrixChunli);
+		//modelMatrixCowboyBody = glm::scale(modelMatrixCowboyBody, glm::vec3(0.0025, 0.0025, 0.0025));
+		chunliModelAnimate.setAnimationIndex(1);
+		chunliModelAnimate.render(modelMatrixChunliBody);
 
 		/*******************************************
 		 * Skybox
