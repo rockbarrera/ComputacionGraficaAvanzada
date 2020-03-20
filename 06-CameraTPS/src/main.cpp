@@ -94,6 +94,8 @@ Model modelLampPost2;
 Model mayowModelAnimate;
 Model cowBoyModelAnimate;
 Model chunliModelAnimate;
+
+int controlAnimChunli = 0;
 // Terrain model instance
 Terrain terrain(-1, -1, 200, 8, "../Textures/heightmap.png");
 
@@ -317,7 +319,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	cowBoyModelAnimate.setShader(&shaderMulLighting);
 
 	//Chunli
-	chunliModelAnimate.loadModel("../models/Chunly/CHUNLI.fbx");
+	chunliModelAnimate.loadModel("../models/Chunly/FINALCHUNLI.fbx");
 	chunliModelAnimate.setShader(&shaderMulLighting);
 
 	camera->setPosition(glm::vec3(0.0, 0.0, 10.0));
@@ -829,13 +831,15 @@ bool processInput(bool continueApplication) {
 		enableCountSelected = false;
 		modelSelected++;
 		camera->setAngleArroundTarget(0.0);
-		if(modelSelected > 3)
+		camera->setAnglePitchTarget(glm::radians(0.0f));
+		camera->setDistanceFromTarget(7.0f);
+		if(modelSelected > 4)
 			modelSelected = 0;
 		if(modelSelected == 1)
 			fileName = "../animaciones/animation_dart_joints.txt";
 		if (modelSelected == 2)
 			fileName = "../animaciones/animation_dart.txt";
-		if (modelSelected == 3)
+		//if (modelSelected == 3)
 			
 		std::cout << "modelSelected:" << modelSelected << std::endl;
 	}
@@ -945,6 +949,27 @@ bool processInput(bool continueApplication) {
 		modelMatrixCawboy = glm::translate(modelMatrixCawboy, glm::vec3(0, 0, -0.02));		
 	}
 
+	//Chunli animate model
+	if (modelSelected == 4 && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+		modelMatrixChunli = glm::rotate(modelMatrixChunli, glm::radians(1.0f), glm::vec3(0, 1, 0));
+	}
+	else if (modelSelected == 4 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+		modelMatrixChunli = glm::rotate(modelMatrixChunli, glm::radians(-1.0f), glm::vec3(0, 1, 0));
+	}
+	
+	if (modelSelected == 4 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+		modelMatrixChunli = glm::translate(modelMatrixChunli, glm::vec3(0, 0, 0.02));
+		controlAnimChunli = 1;
+	}
+	else if ((modelSelected == 4 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_RELEASE) ||
+			(modelSelected == 4 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_RELEASE)) {
+		controlAnimChunli = 0;
+	}
+	else if (modelSelected == 4 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+		modelMatrixChunli = glm::translate(modelMatrixChunli, glm::vec3(0, 0, -0.02));
+		controlAnimChunli = 1;
+	}
+
 	glfwPollEvents();
 	return continueApplication;
 }
@@ -1010,7 +1035,12 @@ void applicationLoop() {
 			angleTarget = glm::angle(glm::quat_cast(modelMatrixCawboy)); //Ángulo del cuaternion
 			target = modelMatrixCawboy[3];
 		}
-		else{
+		else if (modelSelected == 4) {
+			axis = glm::axis(glm::quat_cast(modelMatrixChunli)); //Eje
+			angleTarget = glm::angle(glm::quat_cast(modelMatrixChunli)); //Ángulo del cuaternion
+			target = modelMatrixChunli[3];
+		}
+		else if (modelSelected == 2) {
 			axis = glm::axis(glm::quat_cast(modelMatrixMayow));
 			angleTarget = glm::angle(glm::quat_cast(modelMatrixMayow));
 			target = modelMatrixMayow[3];
@@ -1317,8 +1347,8 @@ void applicationLoop() {
 
 		modelMatrixChunli[3][1] = terrain.getHeightTerrain(modelMatrixChunli[3][0], modelMatrixChunli[3][2]);
 		glm::mat4 modelMatrixChunliBody = glm::mat4(modelMatrixChunli);
-		//modelMatrixCowboyBody = glm::scale(modelMatrixCowboyBody, glm::vec3(0.0025, 0.0025, 0.0025));
-		chunliModelAnimate.setAnimationIndex(1);
+		modelMatrixChunliBody = glm::scale(modelMatrixChunliBody, glm::vec3(0.005, 0.005, 0.005));
+		chunliModelAnimate.setAnimationIndex(controlAnimChunli);
 		chunliModelAnimate.render(modelMatrixChunliBody);
 
 		/*******************************************
