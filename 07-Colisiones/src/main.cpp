@@ -93,6 +93,8 @@ Model modelLampPost2;
 // Model animate instance
 // Mayow
 Model mayowModelAnimate;
+//Model animate nanosuit
+Model nanosuitModel;
 // Terrain model instance
 Terrain terrain(-1, -1, 200, 8, "../Textures/heightmap.png");
 
@@ -126,6 +128,7 @@ glm::mat4 modelMatrixLambo = glm::mat4(1.0);
 glm::mat4 modelMatrixAircraft = glm::mat4(1.0);
 glm::mat4 modelMatrixDart = glm::mat4(1.0f);
 glm::mat4 modelMatrixMayow = glm::mat4(1.0f);
+glm::mat4 modelMatrixNanosuir = glm::mat4(1.0f);
 
 int animationIndex = 1;
 float rotDartHead = 0.0, rotDartLeftArm = 0.0, rotDartLeftHand = 0.0, rotDartRightArm = 0.0, rotDartRightHand = 0.0, rotDartLeftLeg = 0.0, rotDartRightLeg = 0.0;
@@ -324,6 +327,10 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	camera->setPosition(glm::vec3(0.0, 0.0, 10.0));
 	camera->setDistanceFromTarget(distanceFromTarget);
 	camera->setSensitivity(1.0);
+
+	//Nanosuit
+	nanosuitModel.loadModel("../models/nanosuit/nanosuit.obj");
+	nanosuitModel.setShader(&shaderMulLighting);
 
 	// Definimos el tamanio de la imagen
 	int imageWidth, imageHeight;
@@ -719,6 +726,7 @@ void destroy() {
 	modelLamp1.destroy();
 	modelLamp2.destroy();
 	modelLampPost2.destroy();
+	nanosuitModel.destroy();
 
 	// Custom objects animate
 	mayowModelAnimate.destroy();
@@ -927,6 +935,8 @@ void applicationLoop() {
 
 	modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(13.0f, 0.05f, -5.0f));
 	modelMatrixMayow = glm::rotate(modelMatrixMayow, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+
+	modelMatrixNanosuir = glm::translate(modelMatrixNanosuir, glm::vec3(13.0f, 0.0f, 10.0f));
 
 	// Variables to interpolation key frames
 	fileName = "../animaciones/animation_dart_joints.txt";
@@ -1189,6 +1199,11 @@ void applicationLoop() {
 			modelLampPost2.render();
 		}
 
+		modelMatrixNanosuir[3][1] = terrain.getHeightTerrain(modelMatrixNanosuir[3][0], modelMatrixNanosuir[3][2]);
+		glm::mat4 modelMatrixNanosuitBody = glm::mat4(modelMatrixNanosuir);
+		modelMatrixNanosuitBody = glm::scale(modelMatrixNanosuitBody, glm::vec3(0.15, 0.15, 0.15));
+		nanosuitModel.render(modelMatrixNanosuitBody);
+
 		// Dart lego
 		// Se deshabilita el cull faces IMPORTANTE para la capa
 		glDisable(GL_CULL_FACE);
@@ -1340,6 +1355,16 @@ void applicationLoop() {
 			std::get<0>(collidersOBB.find("lamp2-" + std::to_string(i))->second) = lampCollider;
 		}
 
+		// Collider nanosuit
+		AbstractModel::SBB nanosuitCollider;
+		glm::mat4 modelmatrixColliderNanosuit = glm::mat4(modelMatrixNanosuir);
+		modelmatrixColliderNanosuit = glm::scale(modelmatrixColliderNanosuit, glm::vec3(0.15, 0.15, 0.15));
+		modelmatrixColliderNanosuit = glm::translate(modelmatrixColliderNanosuit, nanosuitModel.getSbb().c);
+		nanosuitCollider.c = glm::vec3(modelmatrixColliderNanosuit[3]);
+		nanosuitCollider.ratio = nanosuitModel.getSbb().ratio * 0.15;
+		addOrUpdateColliders(collidersSBB, "nanosuit", nanosuitCollider, modelMatrixNanosuir);
+		//Set the orientation of collider before doing the scale 
+
 		// Collider de mayow
 		AbstractModel::OBB mayowCollider;
 		glm::mat4 modelmatrixColliderMayow = glm::mat4(modelMatrixMayow);
@@ -1381,7 +1406,7 @@ void applicationLoop() {
 		}
 
 		// Esto es para ilustrar la transformacion inversa de los coliders
-		/*glm::vec3 cinv = glm::inverse(mayowCollider.u) * glm::vec4(rockCollider.c, 1.0);
+		glm::vec3 cinv = glm::inverse(mayowCollider.u) * glm::vec4(rockCollider.c, 1.0);
 		glm::mat4 invColliderS = glm::mat4(1.0);
 		invColliderS = glm::translate(invColliderS, cinv);
 		invColliderS =  invColliderS * glm::mat4(mayowCollider.u);
@@ -1398,7 +1423,7 @@ void applicationLoop() {
 		boxCollider.render(invColliderB);
 		// Se regresa el color blanco
 		sphereCollider.setColor(glm::vec4(1.0, 1.0, 1.0, 1.0));
-		boxCollider.setColor(glm::vec4(1.0, 1.0, 1.0, 1.0));*/
+		boxCollider.setColor(glm::vec4(1.0, 1.0, 1.0, 1.0));
 
 		/*******************************************
 		 * Test Colisions

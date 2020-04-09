@@ -103,7 +103,8 @@ vec3 calculateSpotLights(){
 void main()
 {
 	vec4 colorText = texture(texture1, our_uv);
-	if(colorText.a < 0.1)
-		discard;
+	//Quitar si se quieren descartar las transparencias IMPORTANTE
+	/*if(colorText.a == 0.0)
+		discard;*/
     color = vec4(calculateDirectionalLight(directionalLight.light, directionalLight.direction) + calculatePointLights() + calculateSpotLights(), colorText.a);
 }
