@@ -811,7 +811,7 @@ bool processInput(bool continueApplication) {
 	if (enableCountSelected && glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS){
 		enableCountSelected = false;
 		modelSelected++;
-		if(modelSelected > 2)
+		if(modelSelected > 4)
 			modelSelected = 0;
 		if(modelSelected == 1)
 			fileName = "../animaciones/animation_dart_joints.txt";
@@ -897,18 +897,32 @@ bool processInput(bool continueApplication) {
 	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		modelMatrixDart = glm::translate(modelMatrixDart, glm::vec3(0.02, 0.0, 0.0));
 
-	if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
+	if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
 		modelMatrixMayow = glm::rotate(modelMatrixMayow, glm::radians(1.0f), glm::vec3(0, 1, 0));
 		animationIndex = 0;
-	}else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
+	}else if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
 		modelMatrixMayow = glm::rotate(modelMatrixMayow, glm::radians(-1.0f), glm::vec3(0, 1, 0));
 		animationIndex = 0;
-	}if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
+	}if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
 		modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(0, 0, 0.02));
 		animationIndex = 0;
-	}else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
+	}else if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
 		modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(0, 0, -0.02));
 		animationIndex = 0;
+	}
+
+	//Para manipular el lambo con las teclas
+	if (modelSelected == 4 && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+		modelMatrixLambo = glm::rotate(modelMatrixLambo, glm::radians(1.0f), glm::vec3(0, 1, 0));
+	}
+	else if (modelSelected == 4 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+		modelMatrixLambo = glm::rotate(modelMatrixLambo, -glm::radians(1.0f), glm::vec3(0, 1, 0));
+	}
+	if (modelSelected == 4 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+		modelMatrixLambo = glm::translate(modelMatrixLambo, glm::vec3(0, 0, 0.02));
+	}
+	else if (modelSelected == 4 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+		modelMatrixLambo = glm::translate(modelMatrixLambo, glm::vec3(0, 0, -0.02));
 	}
 
 	glfwPollEvents();
@@ -967,15 +981,20 @@ void applicationLoop() {
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f),
 				(float) screenWidth / (float) screenHeight, 0.01f, 100.0f);
 
-		if(modelSelected == 1){
+		if(modelSelected == 1 || modelSelected == 2){
 			axis = glm::axis(glm::quat_cast(modelMatrixDart));
 			angleTarget = glm::angle(glm::quat_cast(modelMatrixDart));
 			target = modelMatrixDart[3];
 		}
-		else{
+		else if(modelSelected == 3){
 			axis = glm::axis(glm::quat_cast(modelMatrixMayow));
 			angleTarget = glm::angle(glm::quat_cast(modelMatrixMayow));
 			target = modelMatrixMayow[3];
+		}
+		else if (modelSelected == 4) { //El modelo del lambo para apuntar la cámara
+			axis = glm::axis(glm::quat_cast(modelMatrixLambo));
+			angleTarget = glm::angle(glm::quat_cast(modelMatrixLambo));
+			target = modelMatrixLambo[3];
 		}
 
 		if(std::isnan(angleTarget))
@@ -1313,10 +1332,19 @@ void applicationLoop() {
 		addOrUpdateColliders(collidersOBB, "aircraft", aircraftCollider, modelMatrixAircraft);
 
 		//Collider del Lamborghini
-		glm::mat4 modelMatrixColliderLambo = glm::mat4(modelMatrixLambo);
+		//El objetivo es crear un objeto de tipo collider AbstractModel::OBB lamboCollider, el cual tiene las propiedades
+		//c: es el centro de la caja, e: Medias dimenisiones de las aristas, u:Orientación en forma de cuaternión
+		glm::mat4 modelMatrixColliderLambo = glm::mat4(modelMatrixLambo); //Las mismas transformaciones al modelo
 		AbstractModel::OBB lamboCollider;
-		lamboCollider.u = glm::quat_cast(modelMatrixLambo);
-		//modelMatrixColliderLambo = 
+		lamboCollider.u = glm::quat_cast(modelMatrixLambo); //La mat de rot hacerla quaternion
+		modelMatrixColliderLambo[3][1] = terrain.getHeightTerrain(modelMatrixColliderLambo[3][0], modelMatrixColliderLambo[3][2]); //Se obtiene la altira del terreno compaginada al lambo
+		modelMatrixColliderLambo = glm::scale(modelMatrixColliderLambo, glm::vec3(1.3, 1.3, 1.3));
+		modelMatrixColliderLambo = glm::translate(modelMatrixColliderLambo, modelLambo.getObb().c); //Se obtiene el centro de la caja del lambo
+		lamboCollider.c = glm::vec3(modelMatrixColliderLambo[3]); //El elem 3 es el vector de traslación
+		lamboCollider.e = modelLambo.getObb().e * glm::vec3(1.3, 1.3, 1.3); //El parseo del modelo se hace vértice por vértice
+		//1.- Arreglo de colliders, 2.- Etiqueta, 3.- Collider que creamos, 4.- Matriz de transformación original
+		addOrUpdateColliders(collidersOBB, "lambo", lamboCollider, modelMatrixLambo); //Se agrega el modelo de colisión
+
 
 		//Collider del la rock
 		AbstractModel::SBB rockCollider;

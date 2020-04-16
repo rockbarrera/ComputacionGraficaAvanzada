@@ -1,3 +1,8 @@
 Calcular el volumen envolvente
 
 Agregar un modelo de colision extra
+
+Giro sobre su propio eje
+Moverse acorde al giro del automóvil
+
+Poner la capara en el modelo creado
