@@ -1312,6 +1312,12 @@ void applicationLoop() {
 		aircraftCollider.e = modelAircraft.getObb().e * glm::vec3(1.0, 1.0, 1.0);
 		addOrUpdateColliders(collidersOBB, "aircraft", aircraftCollider, modelMatrixAircraft);
 
+		//Collider del Lamborghini
+		glm::mat4 modelMatrixColliderLambo = glm::mat4(modelMatrixLambo);
+		AbstractModel::OBB lamboCollider;
+		lamboCollider.u = glm::quat_cast(modelMatrixLambo);
+		//modelMatrixColliderLambo = 
+
 		//Collider del la rock
 		AbstractModel::SBB rockCollider;
 		glm::mat4 modelMatrixColliderRock= glm::mat4(matrixModelRock);
