@@ -95,6 +95,8 @@ Model modelGrass;
 // Model animate instance
 // Mayow
 Model mayowModelAnimate;
+//Capoeira
+Model capoeiraModelAnimate;
 // Terrain model instance
 Terrain terrain(-1, -1, 200, 8, "../Textures/heightmap.png");
 
@@ -128,6 +130,7 @@ glm::mat4 modelMatrixLambo = glm::mat4(1.0);
 glm::mat4 modelMatrixAircraft = glm::mat4(1.0);
 glm::mat4 modelMatrixDart = glm::mat4(1.0f);
 glm::mat4 modelMatrixMayow = glm::mat4(1.0f);
+glm::mat4 modelMatrixCapoeira = glm::mat4(1.0f);
 
 int animationIndex = 1;
 float rotDartHead = 0.0, rotDartLeftArm = 0.0, rotDartLeftHand = 0.0, rotDartRightArm = 0.0, rotDartRightHand = 0.0, rotDartLeftLeg = 0.0, rotDartRightLeg = 0.0;
@@ -333,6 +336,10 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	//Mayow
 	mayowModelAnimate.loadModel("../models/mayow/personaje2.fbx");
 	mayowModelAnimate.setShader(&shaderMulLighting);
+
+	//Capoeira
+	capoeiraModelAnimate.loadModel("../models/capoeira/Capoeira.fbx");
+	capoeiraModelAnimate.setShader(&shaderMulLighting);
 
 	camera->setPosition(glm::vec3(0.0, 0.0, 10.0));
 	camera->setDistanceFromTarget(distanceFromTarget);
@@ -736,6 +743,7 @@ void destroy() {
 
 	// Custom objects animate
 	mayowModelAnimate.destroy();
+	capoeiraModelAnimate.destroy();
 
 	// Textures Delete
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -942,6 +950,8 @@ void applicationLoop() {
 	modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(13.0f, 0.05f, -5.0f));
 	modelMatrixMayow = glm::rotate(modelMatrixMayow, glm::radians(-90.0f), glm::vec3(0, 1, 0));
 
+	modelMatrixCapoeira = glm::translate(modelMatrixCapoeira, glm::vec3(13.0f, 128912.0f, 5.0f));
+
 	// Variables to interpolation key frames
 	fileName = "../animaciones/animation_dart_joints.txt";
 	keyFramesDartJoints = getKeyRotFrames(fileName);
@@ -1107,6 +1117,7 @@ void applicationLoop() {
 			shaderTerrain.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].linear", 0.09);
 			shaderTerrain.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].quadratic", 0.02);
 		}
+		//glDepthFunc(GL_LESS);
 
 		/*******************************************
 		 * Terrain Cesped
@@ -1238,6 +1249,12 @@ void applicationLoop() {
 		mayowModelAnimate.setAnimationIndex(animationIndex);
 		mayowModelAnimate.render(modelMatrixMayowBody);
 
+		modelMatrixCapoeira[3][1] = terrain.getHeightTerrain(modelMatrixCapoeira[3][0], modelMatrixCapoeira[3][2]);
+		glm::mat4 modelMatrixCapoeiraBody = glm::mat4(modelMatrixCapoeira);
+		modelMatrixCapoeiraBody = glm::scale(modelMatrixCapoeiraBody, glm::vec3(1.0, 1.0, 1.0));
+		//capoeiraModelAnimate.setAnimationIndex(animationIndex);
+		capoeiraModelAnimate.render(modelMatrixCapoeiraBody);
+		
 		/*******************************************
 		 * Skybox
 		 *******************************************/
@@ -1409,6 +1426,19 @@ void applicationLoop() {
 		mayowCollider.e = mayowModelAnimate.getObb().e * glm::vec3(0.021, 0.021, 0.021) * glm::vec3(0.787401574, 0.787401574, 0.787401574);
 		mayowCollider.c = glm::vec3(modelmatrixColliderMayow[3]);
 		addOrUpdateColliders(collidersOBB, "mayow", mayowCollider, modelMatrixMayow);
+
+		AbstractModel::OBB capoeiraCollider;
+		glm::mat4 modelMatrixColliderCapeira = glm::mat4(modelMatrixCapoeira);
+		//Importante obtener el cuaternión antes de realizar las transformaciones
+		capoeiraCollider.u = glm::quat_cast(modelMatrixColliderCapeira);
+		//Aplicarle las trasnformaciones de blender 1-100
+		modelMatrixColliderCapeira = glm::scale(modelMatrixColliderCapeira, glm::vec3(1, 1, 1));
+		modelMatrixColliderCapeira = glm::scale(modelMatrixColliderCapeira, glm::vec3(1.0, 1.0, 1.0));
+		modelMatrixColliderCapeira = glm::translate(modelMatrixColliderCapeira, glm::vec3(capoeiraModelAnimate.getObb().c));
+		capoeiraCollider.e = capoeiraModelAnimate.getObb().e * glm::vec3(1.0,1.0,1.0) * glm::vec3(1.0, 1.0, 1.0); //TODO PENDIENTE
+		capoeiraCollider.c = modelMatrixColliderCapeira[3];
+		addOrUpdateColliders(collidersOBB, "capoeira", capoeiraCollider, modelMatrixCapoeira);
+
 
 		/*******************************************
 		 * Render de colliders
