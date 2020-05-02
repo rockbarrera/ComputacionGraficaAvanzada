@@ -172,6 +172,42 @@ std::vector<glm::vec3> lamp2Position = { glm::vec3(-36.52, 0, -23.24),
 		glm::vec3(-52.73, 0, -3.90) };
 std::vector<float> lamp2Orientation = {21.37 + 90, -65.0 + 90};
 
+// Grass Positions
+std::vector<glm::vec3> grassPositionsField = { glm::vec3(0.0, 0.0, 0.0),
+											glm::vec3(-0.5369,-0.02198,-4.978),
+											glm::vec3(-6.249,-0.02198,-3.385),
+											glm::vec3(2.298,-0.02198,-3.456),
+											glm::vec3(6.855,-0.02198,-3.684),
+											glm::vec3(0.09494,-0.02198,-8.507),
+											glm::vec3(-2.791,-0.02198,-2.279),
+											glm::vec3(0.8545,-0.02198,-2.279),
+											glm::vec3(4.614,-0.02198,-1.747),
+											glm::vec3(-11.79,-0.02198,-0.1549),
+											glm::vec3(-6.019,-0.02198,-0.7216),
+											glm::vec3(-2.146,-0.02198,-0.07596),
+											glm::vec3(-8.374,-0.02198,1.253),
+											glm::vec3(-4.456,-0.02198,1.063),
+											glm::vec3(0.3228,-0.02198,0.6456),
+											glm::vec3(4.045,-0.02198,0.4937),
+											glm::vec3(9.627,-0.02198,0.5317),
+											glm::vec3(-8.374,-0.02198,1.215),
+											glm::vec3(-4.918,-0.02198,1.101),
+											glm::vec3(-1.082,-0.02198,1.709),
+											glm::vec3(2.943,-0.02198,2.317),
+											glm::vec3(6.969,-0.02198,2.279),
+											glm::vec3(-4.652,-0.02198,4.102),
+											glm::vec3(-2.45,-0.02198,3.418),
+											glm::vec3(4.273,-0.02198,3.532),
+											glm::vec3(-5.602,-0.02198,7.14),
+											glm::vec3(-2.488,-0.02198,5.887),
+											glm::vec3(0.8925,-0.02198,4.975),
+											glm::vec3(5.336,-0.02198,5.811),
+											glm::vec3(0.6266,-0.02198,9.153) };
+//Grass Orientations
+std::vector<float> grassOrientation = {12.4, 30.6, 3.34, 24.2, 30.5, 40.7, 56.1, 87.9, 66.2, 20.5,
+									   11.4, 69.3, 40.5, 50.78, 80.9, 89.99, 9.1, 73.5, 56.9, 44.4,
+									   26.5, -30.5, -59.6, -43.5, -12.5, -55.55, -56.32, -15.4, -26.8, -46.6};
+
 // Blending model unsorted
 //1.-Dibujar todos los objetos de color sólido.
 //2.-Ordenar los objetos transparentes.
@@ -181,7 +217,36 @@ std::map<std::string, glm::vec3> blendingUnsorted = {
 		{"aircraft", glm::vec3(10.0, 0.0, -17.5)},  
 		{"lambo", glm::vec3(23.0, 0.0, 0.0)}, 
 		{"heli", glm::vec3(5.0, 10.0, -5.0)}, 
-		{"grass", glm::vec3(0.0, 0.0, 0.0)}
+		{"grass0", grassPositionsField[0]},
+		{"grass1", grassPositionsField[1]},
+		{"grass2", grassPositionsField[2]},
+		{"grass3", grassPositionsField[3]},
+		{"grass4", grassPositionsField[4]},
+		{"grass5", grassPositionsField[5]},
+		{"grass6", grassPositionsField[6]},
+		{"grass7", grassPositionsField[7]},
+		{"grass8", grassPositionsField[8]},
+		{"grass9", grassPositionsField[9]},
+		{"grass10", grassPositionsField[10]},
+		{"grass11", grassPositionsField[11]},
+		{"grass12", grassPositionsField[12]},
+		{"grass13", grassPositionsField[13]},
+		{"grass14", grassPositionsField[14]},
+		{"grass15", grassPositionsField[15]},
+		{"grass16", grassPositionsField[16]},
+		{"grass17", grassPositionsField[17]},
+		{"grass18", grassPositionsField[18]},
+		{"grass19", grassPositionsField[19]},
+		{"grass20", grassPositionsField[20]},
+		{"grass21", grassPositionsField[21]},
+		{"grass22", grassPositionsField[22]},
+		{"grass23", grassPositionsField[23]},
+		{"grass24", grassPositionsField[24]},
+		{"grass25", grassPositionsField[25]},
+		{"grass26", grassPositionsField[26]},
+		{"grass27", grassPositionsField[27]},
+		{"grass28", grassPositionsField[28]},
+		{"grass29", grassPositionsField[29]}
 		//La llave del modelo y posición
 };
 
@@ -336,7 +401,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelLampPost2.setShader(&shaderMulLighting);
 
 	//Grass
-	modelGrass.loadModel("../models/grass/grassModel.obj");
+	modelGrass.loadModel("../models/grass/grassUnit.obj");
 	modelGrass.setShader(&shaderMulLighting);
 
 	//Mayow
@@ -1287,9 +1352,16 @@ void applicationLoop() {
 		// Update the helicopter
 		blendingUnsorted.find("heli")->second = glm::vec3(modelMatrixHeli[3]);
 		//Update the grass
-		glm::vec3 grassPosition = blendingUnsorted.find("grass")->second;
-		grassPosition[2] = terrain.getHeightTerrain(grassPosition[0], grassPosition[2]);
-		blendingUnsorted.find("grass")->second = grassPosition;
+		//glm::vec3 grassPosition = blendingUnsorted.find("grass0")->second;
+		
+		glm::vec3 grassPosition[30];
+		for (int i = 0; i < 30; i++) {
+			std::string position = "grass" + std::to_string(i);
+			grassPosition[i] = blendingUnsorted.find(position)->second;
+			grassPosition[i][1] = terrain.getHeightTerrain(grassPosition[i][0], grassPosition[i][2]);
+			blendingUnsorted.find(position)->second = grassPosition[i];
+		}
+		
 
 		
 
@@ -1474,8 +1546,154 @@ void applicationLoop() {
 				modelMatrixHeliHeli = glm::translate(modelMatrixHeliHeli, glm::vec3(0.0, 0.0, 0.249548));
 				modelHeliHeli.render(modelMatrixHeliHeli);
 			}
-			else if (it->second.first.compare("grass") == 0) {
+			else if (it->second.first.compare("grass0") == 0) {
 				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[0], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass1") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[1], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass2") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[2], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass3") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[3], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass4") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[4], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass5") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[5], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass6") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[6], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass7") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[7], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass8") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[8], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass9") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[9], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass10") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[10], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass11") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[11], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass12") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[12], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass13") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[13], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass14") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[14], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass15") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[15], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass16") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[16], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass17") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[17], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass18") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[18], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass19") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[19], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass20") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[20], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass21") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[21], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass22") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[22], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass23") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[23], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass24") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[24], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass25") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[25], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass26") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[26], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass27") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[27], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass28") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[28], 0));
+				modelGrass.render();
+			}
+			else if (it->second.first.compare("grass29") == 0) {
+				modelGrass.setPosition(it->second.second);
+				modelGrass.setOrientation(glm::vec3(0, grassOrientation[29], 0));
 				modelGrass.render();
 			}
 		}

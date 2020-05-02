@@ -55,7 +55,7 @@ uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 
 uniform vec3 viewPos;
   
-uniform vec2 scaleUV;  
+uniform vec2 scaleUV; 
   
 uniform sampler2D backgroundTexture;
 uniform sampler2D rTexture;

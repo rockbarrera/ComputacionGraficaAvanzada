@@ -1013,12 +1013,13 @@ void applicationLoop() {
 		shaderTerrain.setMatrix4("view", 1, false,
 				glm::value_ptr(view));
 
-		/*******************************************
-		 * Propiedades de neblina
-		 *******************************************/
-		shaderMulLighting.setVectorFloat3("fogColor", glm::value_ptr(glm::vec3(0.5, 0.5, 0.4)));
-		shaderTerrain.setVectorFloat3("fogColor", glm::value_ptr(glm::vec3(0.5, 0.5, 0.4)));
-		shaderSkybox.setVectorFloat3("fogColor", glm::value_ptr(glm::vec3(0.5, 0.5, 0.4)));
+		/******************************************************
+		 *Propiedades de la neblina
+		 ******************************************************/
+
+		shaderMulLighting.setVectorFloat3("fogColor", glm::value_ptr(glm::vec3(0.5, 0.5, 0.5)));
+		shaderTerrain.setVectorFloat3("fogColor", glm::value_ptr(glm::vec3(0.5, 0.5, 0.5)));
+		shaderSkybox.setVectorFloat3("fogColor", glm::value_ptr(glm::vec3(0.5, 0.5, 0.5)));
 
 		/*******************************************
 		 * Propiedades Luz direccional
