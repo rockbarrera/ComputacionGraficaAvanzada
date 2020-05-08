@@ -1506,8 +1506,8 @@ void applicationLoop() {
 		 * Render de las transparencias
 		 */
 		glEnable(GL_BLEND); //Habilitar el Blend
-		glBlendColor(0, 1, 0, 1); //Si se usa GL_CONSTANT_COLOR se tiene que mandar el color que se requiere 
-		glBlendFunc(GL_CONSTANT_COLOR, GL_ONE);
+		glBlendColor(1, 0, 0, 0.5); //Si se usa GL_CONSTANT_COLOR se tiene que mandar el color que se requiere 
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_CULL_FACE); //Si no se desactiva, hace el recorte de la cara
 		for (std::map<float, std::pair<std::string, glm::vec3> >::reverse_iterator it = blendingSorted.rbegin(); it != blendingSorted.rend(); it++) {
 			if (it->second.first.compare("aircraft") == 0) {
